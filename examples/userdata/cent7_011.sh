@@ -3,25 +3,13 @@ yum install -y httpd
 systemctl enable httpd
 systemctl start httpd
 
-echo "DEVICE=ens192
+echo "DEVICE=ens160
 ONBOOT=yes
 BOOTPROTO=static
+GATEWAY=192.168.0.10
 NETMASK=255.255.255.0
-IPADDR=192.168.0.10" > /etc/sysconfig/network-scripts/ifcfg-ens192
-ifdown ens192; ifup ens192
-
-## MASQUERADE
-iptables -F INPUT
-iptables -F OUTPUT
-iptables -F FORWARD
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-echo 1 > /proc/sys/net/ipv4/ip_forward
-echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
-iptables -t nat -A POSTROUTING -o ens160 -j MASQUERADE
-iptables-save > /etc/sysconfig/iptables
-systemctl enable iptables
+IPADDR=192.168.0.110" > /etc/sysconfig/network-scripts/ifcfg-ens160
+ifdown ens160; ifup ens160
 
 ## nifcloud ではディスクがあとからアタッチされるので、以下のような処理はuserdata不可
 #for i in $(find /sys/class/scsi_host -name 'scan') $(find /sys/devices -name 'scan') ;do echo "- - -" > $i ; done
