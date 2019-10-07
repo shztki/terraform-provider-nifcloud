@@ -25,8 +25,8 @@ resource "nifcloud_instance" "example_server_cent" {
 }
 
 resource "nifcloud_instance" "example_server_win" {
-  count = "${lookup(var.instance_win, "count")}"
-  name  = "${format("%s%03d", "${lookup(var.instance_win, "name")}", count.index + 1)}"
+  count    = "${lookup(var.instance_win, "count")}"
+  name     = "${format("%s%03d", "${lookup(var.instance_win, "name")}", count.index + 1)}"
   image_id = "${lookup(var.instance_win, "imageid")}"
   admin    = "${var.admin_user_name}"
   password = "${var.def_pass}"

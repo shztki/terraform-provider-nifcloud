@@ -10,6 +10,8 @@ import (
 	"github.com/shztki/nifcloud-sdk-go/service/computing"
 	"log"
 	"time"
+	"strconv"
+//	"encoding/json"
 )
 
 func resourceNifcloudSecurityGroup() *schema.Resource {
@@ -39,50 +41,48 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 //				ValidateFunc: validation.StringLenBetween(0, 40),
 			},
 
-//			"ingress": {
-//				Type:       schema.TypeSet,
-//				Optional:   true,
-//				Computed:   true,
-////				ConfigMode: schema.SchemaConfigModeAttr,
-//				Elem: &schema.Resource{
-//					Schema: map[string]*schema.Schema{
-//						"from_port": {
-//							Type:     schema.TypeInt,
-//                            Optional: true,
-//						},
-//
-//						"to_port": {
-//							Type:     schema.TypeInt,
-//                            Optional: true,
-//						},
-//
-//						"protocol": {
-//							Type:      schema.TypeString,
-//							Required:  true,
-//                            Default:  "TCP",
-//						},
-//
-//						"cidr_blocks": {
-//							Type:     schema.TypeList,
-//							Optional: true,
-//							Elem:     &schema.Schema{Type: schema.TypeString},
-//						},
-//
-//						"security_groups": {
-//							Type:     schema.TypeSet,
-//							Optional: true,
-//							Elem:     &schema.Schema{Type: schema.TypeString},
-////							Set:      schema.HashString,
-//						},
-//
-//						"description": {
-//							Type:         schema.TypeString,
-//							Optional:     true,
-//						},
-//					},
-//				},
-////				Set: resourceAwsSecurityGroupRuleHash,
-//			},
+			"ingress": {
+				Type:       schema.TypeSet,
+				Optional:   true,
+//				Computed:   false,
+//				ConfigMode: schema.SchemaConfigModeAttr,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"from_port": {
+							Type:     schema.TypeString,
+                            Optional: true,
+						},
+
+						"to_port": {
+							Type:     schema.TypeString,
+                            Optional: true,
+						},
+
+						"protocol": {
+							Type:      schema.TypeString,
+							Required:  true,
+//							Default:  "TCP",
+						},
+
+						"cidr_blocks": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+
+						"security_groups": {
+							Type:     schema.TypeString,
+							Optional: true,
+//							Set:      schema.HashString,
+						},
+
+						"description": {
+							Type:         schema.TypeString,
+							Optional:     true,
+						},
+					},
+				},
+//				Set: resourceAwsSecurityGroupRuleHash,
+			},
 //
 //			"egress": {
 //				Type:       schema.TypeSet,
@@ -130,11 +130,6 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 ////				Set: resourceAwsSecurityGroupRuleHash,
 //			},
 
-			"revoke_rules_on_delete": {
-				Type:     schema.TypeBool,
-				Default:  false,
-				Optional: true,
-			},
 		},
 	}
 }
@@ -158,54 +153,32 @@ func resourceNifcloudSecurityGroupCreate(d *schema.ResourceData, meta interface{
 
 	log.Printf("[DEBUG] Waiting for (%s) to become running", *securitygroup.RequestId)
 
-	resp, err := waitForSgToExist(conn, d.Get("name").(string), d.Timeout(schema.TimeoutCreate))
+	resp, err := waitForSgToExist(conn, d.Id(), d.Timeout(schema.TimeoutCreate))
 	if err != nil {
 		return fmt.Errorf(
 		"Error waiting for Security Group (%s) to become available: %s",
-		nifcloud.String(d.Get("name").(string)), err)
+		d.Id(), err)
 	}
 	group := resp.(*computing.SecurityGroupInfoSetItem)
-	log.Printf("[INFO] SecurityGroup infoooo: %s", *group.GroupName)
+	log.Printf("[INFO] SecurityGroup info: %s", *group.GroupName)
 
 	if group.GroupName != nil && *group.GroupName != "" {
-		log.Printf("[DEBUG] Authorize default ingress/egress rule for Security Group for %s", d.Id())
+		log.Printf("[DEBUG] Authorize default ingress rule for Security Group for %s", d.Id())
 
-		req := computing.AuthorizeSecurityGroupIngressInput{
-			GroupName: group.GroupName,
-			IpPermissions: []*computing.RequestIpPermissionsStruct{
-				{
-					Description:     nifcloud.String("testin1"),
-					//FromPort:        nifcloud.Int64(int64(0)),
-					//ToPort:          nifcloud.Int64(int64(0)),
-					RequestIpRanges: []*computing.RequestIpRangesStruct{
-						{
-							CidrIp: nifcloud.String("0.0.0.0/0"),
-						},
-					},
-					IpProtocol: nifcloud.String("ANY"),
-			                InOut:      nifcloud.String("IN"),
-				},
-				{
-					Description:     nifcloud.String("testout1"),
-					//FromPort:        nifcloud.Int64(int64(0)),
-					//ToPort:          nifcloud.Int64(int64(0)),
-					RequestIpRanges: []*computing.RequestIpRangesStruct{
-						{
-							CidrIp: nifcloud.String("0.0.0.0/0"),
-						},
-					},
-					IpProtocol: nifcloud.String("ANY"),
-			                InOut:      nifcloud.String("OUT"),
-				},
-			},
+		ipPermissions := setSecurityGroupIngress(d, meta)
+		log.Printf("[INFO] **********************************\n main ipPermissions : %v\n ***************************", ipPermissions)
+		if ipPermissions != nil {
+			req := computing.AuthorizeSecurityGroupIngressInput{
+				GroupName: nifcloud.String(d.Id()),
+				IpPermissions: ipPermissions,
+			}
+	
+			if _, err = conn.AuthorizeSecurityGroupIngress(&req); err != nil {
+				return fmt.Errorf(
+					"Error authorizing default ingress rule for Security Group (%s): %s",
+					d.Id(), err)
+			}
 		}
-
-		if _, err = conn.AuthorizeSecurityGroupIngress(&req); err != nil {
-			return fmt.Errorf(
-				"Error authorizing default ingress/egress rule for Security Group (%s): %s",
-				d.Id(), err)
-		}
-
 	}
 
 	return resourceNifcloudSecurityGroupRead(d, meta)
@@ -232,12 +205,12 @@ func resourceNifcloudSecurityGroupDelete(d *schema.ResourceData, meta interface{
 		}
 		return nil
 	})
-	//if isResourceTimeoutError(err) {
-	//	_, err = conn.DeleteSecurityGroup(&input)
-	//	if isAWSErr(err, "InvalidGroup.NotFound", "") {
-	//		return nil
-	//	}
-	//}
+	if isResourceTimeoutError(err) {
+		_, err = conn.DeleteSecurityGroup(&input)
+		if isAWSErr(err, "InvalidGroup.NotFound", "") {
+			return nil
+		}
+	}
 	if err != nil {
 		return fmt.Errorf("Error deleting security group: %s", err)
 	}
@@ -305,6 +278,7 @@ func waitForSgToExist(conn *computing.Computing, id string, timeout time.Duratio
 	return stateConf.WaitForState()
 }
 
+// SGStateRefreshFunc is function
 func SGStateRefreshFunc(conn *computing.Computing, id string) resource.StateRefreshFunc {
 	return func() (interface{}, string, error) {
 		req := computing.DescribeSecurityGroupsInput{
@@ -340,7 +314,56 @@ func setSecurityGroupResourceData(d *schema.ResourceData, meta interface{}, out 
 
 	d.Set("name", securitygroup.GroupName)
 	d.Set("description", securitygroup.GroupDescription)
-//	d.Set("ipPermissions", securitygroup.IpPermissions)
+	d.Set("ingress", securitygroup.IpPermissions)
 
 	return nil
+}
+
+func setSecurityGroupIngress(d *schema.ResourceData, meta interface{}) []*computing.RequestIpPermissionsStruct {
+	var ipPermissions []*computing.RequestIpPermissionsStruct
+	if permissions, ok := d.GetOk("ingress"); ok {
+		for _, ip := range permissions.(*schema.Set).List() {
+			ipPermission := &computing.RequestIpPermissionsStruct{}
+			if v, ok := ip.(map[string]interface{}); ok {
+				if v["description"].(string) != "" {
+					ipPermission.SetDescription(v["description"].(string))
+				}
+				
+				if v["from_port"].(string) != "" {
+					var from64,to64 int64
+					from64, _ = strconv.ParseInt(v["from_port"].(string),10,64)
+					to64, _ = strconv.ParseInt(v["to_port"].(string),10,64)
+					ipPermission.SetFromPort(from64)
+					ipPermission.SetToPort(to64)
+				}
+				
+				if v["cidr_blocks"].(string) != "" {
+					tmp := []*computing.RequestIpRangesStruct {
+						{
+							CidrIp: nifcloud.String(v["cidr_blocks"].(string)),
+						},
+					}
+					ipPermission.SetRequestIpRanges(tmp)
+				}
+				
+				if v["security_groups"].(string) != "" {
+					tmp := []*computing.RequestGroupsStruct {
+						{
+							GroupName: nifcloud.String(v["security_groups"].(string)),
+						},
+					}
+					ipPermission.SetRequestGroups(tmp)
+				}
+
+				if v["protocol"].(string) != "" {
+					ipPermission.SetIpProtocol(v["protocol"].(string))
+				}
+
+				ipPermission.SetInOut("IN")
+			}
+			ipPermissions = append(ipPermissions, ipPermission)
+		}
+	}
+
+	return ipPermissions
 }

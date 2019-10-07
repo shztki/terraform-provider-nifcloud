@@ -6,9 +6,9 @@ resource "nifcloud_instance" "example_server_cent_noneglobal" {
 
   #ip_type             = "static" # static | elastic | none
   #public_ip           = "" # elastic
-#  network_interfaces {
-#    network_id = "net-COMMON_GLOBAL" # net-COMMON_GLOBAL | net-COMMON_PRIVATE
-#  }
+  #  network_interfaces {
+  #    network_id = "net-COMMON_GLOBAL" # net-COMMON_GLOBAL | net-COMMON_PRIVATE
+  #  }
   network_interfaces {
     network_name = "${lookup(var.privatelan_example, "name")}"
     ipaddress    = "static"
@@ -25,17 +25,17 @@ resource "nifcloud_instance" "example_server_cent_noneglobal" {
 }
 
 resource "nifcloud_instance" "example_server_win_noneglobal" {
-  count = "${lookup(var.instance_win, "count")}"
-  name  = "${format("%s%03d", "${lookup(var.instance_win, "name")}", count.index + 11)}"
+  count    = "${lookup(var.instance_win, "count")}"
+  name     = "${format("%s%03d", "${lookup(var.instance_win, "name")}", count.index + 11)}"
   image_id = "${lookup(var.instance_win, "imageid")}"
   admin    = "${var.admin_user_name}"
   password = "${var.def_pass}"
 
   #ip_type             = "static" # static | elastic | none
   #public_ip           = "" # elastic
-#  network_interfaces {
-#    network_id = "net-COMMON_GLOBAL" # net-COMMON_GLOBAL | net-COMMON_PRIVATE
-#  }
+  #  network_interfaces {
+  #    network_id = "net-COMMON_GLOBAL" # net-COMMON_GLOBAL | net-COMMON_PRIVATE
+  #  }
   network_interfaces {
     network_name = "${lookup(var.privatelan_example, "name")}"
     ipaddress    = "static"

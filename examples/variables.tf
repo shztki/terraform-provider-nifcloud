@@ -30,6 +30,7 @@ variable "privatelan_example" {
   }
 }
 
+# https://pfs.nifcloud.com/api/rest/CreateSecurityGroup.htm
 variable "firewallgroup_example" {
   default = {
     name = "exampleweb"
