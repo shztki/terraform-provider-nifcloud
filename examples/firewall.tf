@@ -3,53 +3,68 @@ resource "nifcloud_securitygroup" "example_firewallgroup_001" {
   name        = "${lookup(var.firewallgroup_example, "name")}"
   description = "${lookup(var.firewallgroup_example, "memo")}"
 
-  ingress {
+  rules {
     from_port       = 80
     to_port         = 80
     protocol        = "TCP"
     cidr_blocks     = "0.0.0.0/0"
     #security_groups = "Zenkai"
     description     = "webt"
+    inout           = "IN"
   }
-  ingress {
+  rules {
     from_port       = 80
     to_port         = 80
     protocol        = "UDP"
     cidr_blocks     = "0.0.0.0/0"
     #security_groups = "Zenkai"
     description     = "webu"
+    inout           = "IN"
   }
-  ingress {
+  rules {
     #from_port       = 80
     #to_port         = 80
     protocol        = "https"
     cidr_blocks     = "0.0.0.0/0"
     #security_groups = "Zenkai"
     description     = "https"
+    inout           = "IN"
   }
-  ingress {
+  rules {
     #from_port       = 80
     #to_port         = 80
     protocol        = "SSH"
     cidr_blocks     = "1.1.1.1"
     #security_groups = "Zenkai"
     description     = "ssh"
+    inout           = "IN"
   }
-  ingress {
+  rules {
     #from_port       = 80
     #to_port         = 80
     protocol        = "ANY"
     #cidr_blocks     = "0.0.0.0/0"
     security_groups = "Zenkai"
     description     = "group-zenkai"
+    inout           = "IN"
   }
-  ingress {
+  rules {
     #from_port       = 80
     #to_port         = 80
     protocol        = "RDP"
     cidr_blocks     = "1.1.1.0/28"
     #security_groups = "Zenkai"
     description     = "rdp"
+    inout           = "IN"
   }
 
+#  rules {
+#    #from_port       = 80
+#    #to_port         = 80
+#    protocol        = "ANY"
+#    cidr_blocks     = "0.0.0.0/0"
+#    #security_groups = "Zenkai"
+#    description     = "all"
+#    inout           = "OUT"
+#  }
 }

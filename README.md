@@ -38,6 +38,7 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 1. ニフクラには「月額/従量」の課金タイプがある。設定する際は `AccountingType` にパラメータを渡すだけだが、変更は翌月からとなる関係で、最新の状態は `NextMonthAccountingType` となる。このため `accounting_type` として tfstate に残す値は `NextMonthAccountingType` にした方がよい。
 1. インスタンスで `IpType` を残していると、 `NetworkInterfaces` で作成した場合にも Describe したあとに値が入ってしまい、tfstate の差分が生まれるため、無しとした。
 1. プライベートLAN に所属させるインスタンスで、 `userdata` を利用してプライベートIPアドレスを設定しない場合、サーバー作成完了までにかなり時間がかかる(サーバーのステータスは「異常あり」で完了)。この場合、サーバー自体は作成されても、terraform の実行はタイムアウトでエラー終了することがある(あとで import は可能)。気に入らない場合は、 `Create: schema.DefaultTimeout(5 * time.Minute)` を 15分くらいに延ばした方がいいかもしれない。
+1. ファイアウォールグループについて、ログ取得件数を変更する処理は実装していません。必要なら `UpdateSecurityGroup` を使う形で別途実装が必要。
 
 ##### aws-sdk-go
 1. いくつか修正しないといけない点があったため、ブランチを分けて[自分の環境に作成][3]。

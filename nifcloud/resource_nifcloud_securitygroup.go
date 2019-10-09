@@ -11,7 +11,6 @@ import (
 	"log"
 	"time"
 	"strconv"
-//	"encoding/json"
 )
 
 func resourceNifcloudSecurityGroup() *schema.Resource {
@@ -20,13 +19,34 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 		Read:   resourceNifcloudSecurityGroupRead,
 		Update: resourceNifcloudSecurityGroupUpdate,
 		Delete: resourceNifcloudSecurityGroupDelete,
-		Importer: &schema.ResourceImporter{},
+		Importer: &schema.ResourceImporter{
+			State: func(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+				conn := meta.(*NifcloudClient).computingconn
+				out, err := conn.DescribeSecurityGroups(&computing.DescribeSecurityGroupsInput{})
+
+				if err != nil {
+					return nil, fmt.Errorf("Error Import resource: %s", err)
+				}
+
+				for _, r := range out.SecurityGroupInfo {
+					if *r.GroupName == d.Id() {
+						d.Set("name", r.GroupName)
+
+						return []*schema.ResourceData{d}, nil
+					}
+				}
+
+				return nil, fmt.Errorf("Error Import resource: %s", d.Id())
+			},
+		},
 
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(1 * time.Minute),
 			Update: schema.DefaultTimeout(1 * time.Minute),
 			Delete: schema.DefaultTimeout(1 * time.Minute),
 		},
+
+		SchemaVersion: 1,
 
         Schema: map[string]*schema.Schema{
 			"name": {
@@ -41,21 +61,19 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 //				ValidateFunc: validation.StringLenBetween(0, 40),
 			},
 
-			"ingress": {
+			"rules": {
 				Type:       schema.TypeSet,
 				Optional:   true,
-//				Computed:   false,
-//				ConfigMode: schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"from_port": {
 							Type:     schema.TypeString,
-                            Optional: true,
+							Optional: true,
 						},
 
 						"to_port": {
 							Type:     schema.TypeString,
-                            Optional: true,
+							Optional: true,
 						},
 
 						"protocol": {
@@ -72,63 +90,20 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 						"security_groups": {
 							Type:     schema.TypeString,
 							Optional: true,
-//							Set:      schema.HashString,
 						},
 
 						"description": {
 							Type:         schema.TypeString,
 							Optional:     true,
 						},
+
+						"inout": {
+							Type:         schema.TypeString,
+							Required:     true,
+						},
 					},
 				},
-//				Set: resourceAwsSecurityGroupRuleHash,
 			},
-//
-//			"egress": {
-//				Type:       schema.TypeSet,
-//				Optional:   true,
-//				Computed:   true,
-////				ConfigMode: schema.SchemaConfigModeAttr,
-//				Elem: &schema.Resource{
-//					Schema: map[string]*schema.Schema{
-//						"from_port": {
-//							Type:     schema.TypeInt,
-//							Optional: true,
-//						},
-//
-//						"to_port": {
-//							Type:     schema.TypeInt,
-//							Optional: true,
-//						},
-//
-//						"protocol": {
-//							Type:      schema.TypeString,
-//							Required:  true,
-//							Default:   "ANY",
-//						},
-//
-//						"cidr_blocks": {
-//							Type:     schema.TypeList,
-//							Optional: true,
-//							Elem:     &schema.Schema{Type: schema.TypeString},
-//						},
-//
-//						"security_groups": {
-//							Type:     schema.TypeSet,
-//							Optional: true,
-//							Elem:     &schema.Schema{Type: schema.TypeString},
-////							Set:      schema.HashString,
-//						},
-//
-//						"description": {
-//							Type:         schema.TypeString,
-//							Optional:     true,
-////							ValidateFunc: validateSecurityGroupRuleDescription,
-//						},
-//					},
-//				},
-////				Set: resourceAwsSecurityGroupRuleHash,
-//			},
 
 		},
 	}
@@ -163,10 +138,10 @@ func resourceNifcloudSecurityGroupCreate(d *schema.ResourceData, meta interface{
 	log.Printf("[INFO] SecurityGroup info: %s", *group.GroupName)
 
 	if group.GroupName != nil && *group.GroupName != "" {
-		log.Printf("[DEBUG] Authorize default ingress rule for Security Group for %s", d.Id())
+		log.Printf("[DEBUG] Authorize default rule for Security Group for %s", d.Id())
 
-		ipPermissions := setSecurityGroupIngress(d, meta)
-		log.Printf("[INFO] **********************************\n main ipPermissions : %v\n ***************************", ipPermissions)
+		ipPermissions := setSecurityGroupRule(d.Get("rules"))
+		log.Printf("[INFO] **********************************\n ipPermissions : %v\n ***************************", ipPermissions)
 		if ipPermissions != nil {
 			req := computing.AuthorizeSecurityGroupIngressInput{
 				GroupName: nifcloud.String(d.Id()),
@@ -175,7 +150,7 @@ func resourceNifcloudSecurityGroupCreate(d *schema.ResourceData, meta interface{
 	
 			if _, err = conn.AuthorizeSecurityGroupIngress(&req); err != nil {
 				return fmt.Errorf(
-					"Error authorizing default ingress rule for Security Group (%s): %s",
+					"Error authorizing default rule for Security Group (%s): %s",
 					d.Id(), err)
 			}
 		}
@@ -238,8 +213,42 @@ func resourceNifcloudSecurityGroupUpdate(d *schema.ResourceData, meta interface{
 			GroupNameUpdate: nifcloud.String(after.(string)),
 		})
 
+		d.SetId(d.Get("name").(string))
+
 		if err != nil {
 			return fmt.Errorf("Error UpdateSecurityGroup: %s", err)
+		}
+	}
+
+	if d.HasChange("rules") {
+		before, after := d.GetChange("rules")
+		ipPermissionsOld := setSecurityGroupRule(before)
+		log.Printf("[INFO] **********************************\n before ipPermissions : %v\n ***************************", ipPermissionsOld)
+		ipPermissionsNew := setSecurityGroupRule(after)
+		log.Printf("[INFO] **********************************\n after ipPermissions : %v\n ***************************", ipPermissionsNew)
+		if ipPermissionsOld != nil {
+			req := computing.RevokeSecurityGroupIngressInput{
+				GroupName: nifcloud.String(d.Id()),
+				IpPermissions: ipPermissionsOld,
+			}
+	
+			if _, err := conn.RevokeSecurityGroupIngress(&req); err != nil {
+				return fmt.Errorf(
+					"Error deleting default ingress rule for Security Group (%s): %s",
+					d.Id(), err)
+			}
+		}
+		if ipPermissionsNew != nil {
+			req := computing.AuthorizeSecurityGroupIngressInput{
+				GroupName: nifcloud.String(d.Id()),
+				IpPermissions: ipPermissionsNew,
+			}
+	
+			if _, err := conn.AuthorizeSecurityGroupIngress(&req); err != nil {
+				return fmt.Errorf(
+					"Error authorizing default ingress rule for Security Group (%s): %s",
+					d.Id(), err)
+			}
 		}
 	}
 
@@ -260,7 +269,7 @@ func resourceNifcloudSecurityGroupRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return fmt.Errorf("Couldn't find Instance resource: %s", err)
+		return fmt.Errorf("Couldn't find SecurityGroup resource: %s", err)
 	}
 
 	return setSecurityGroupResourceData(d, meta, out)
@@ -314,55 +323,55 @@ func setSecurityGroupResourceData(d *schema.ResourceData, meta interface{}, out 
 
 	d.Set("name", securitygroup.GroupName)
 	d.Set("description", securitygroup.GroupDescription)
-	d.Set("ingress", securitygroup.IpPermissions)
+	d.Set("rules", securitygroup.IpPermissions)
 
 	return nil
 }
 
-func setSecurityGroupIngress(d *schema.ResourceData, meta interface{}) []*computing.RequestIpPermissionsStruct {
+func setSecurityGroupRule(permissions interface{}) []*computing.RequestIpPermissionsStruct {
 	var ipPermissions []*computing.RequestIpPermissionsStruct
-	if permissions, ok := d.GetOk("ingress"); ok {
-		for _, ip := range permissions.(*schema.Set).List() {
-			ipPermission := &computing.RequestIpPermissionsStruct{}
-			if v, ok := ip.(map[string]interface{}); ok {
-				if v["description"].(string) != "" {
-					ipPermission.SetDescription(v["description"].(string))
-				}
-				
-				if v["from_port"].(string) != "" {
-					var from64,to64 int64
-					from64, _ = strconv.ParseInt(v["from_port"].(string),10,64)
-					to64, _ = strconv.ParseInt(v["to_port"].(string),10,64)
-					ipPermission.SetFromPort(from64)
-					ipPermission.SetToPort(to64)
-				}
-				
-				if v["cidr_blocks"].(string) != "" {
-					tmp := []*computing.RequestIpRangesStruct {
-						{
-							CidrIp: nifcloud.String(v["cidr_blocks"].(string)),
-						},
-					}
-					ipPermission.SetRequestIpRanges(tmp)
-				}
-				
-				if v["security_groups"].(string) != "" {
-					tmp := []*computing.RequestGroupsStruct {
-						{
-							GroupName: nifcloud.String(v["security_groups"].(string)),
-						},
-					}
-					ipPermission.SetRequestGroups(tmp)
-				}
-
-				if v["protocol"].(string) != "" {
-					ipPermission.SetIpProtocol(v["protocol"].(string))
-				}
-
-				ipPermission.SetInOut("IN")
+	for _, ip := range permissions.(*schema.Set).List() {
+		ipPermission := &computing.RequestIpPermissionsStruct{}
+		if v, ok := ip.(map[string]interface{}); ok {
+			if v["description"].(string) != "" {
+				ipPermission.SetDescription(v["description"].(string))
 			}
-			ipPermissions = append(ipPermissions, ipPermission)
+			
+			if v["from_port"].(string) != "" {
+				var from64,to64 int64
+				from64, _ = strconv.ParseInt(v["from_port"].(string),10,64)
+				to64, _ = strconv.ParseInt(v["to_port"].(string),10,64)
+				ipPermission.SetFromPort(from64)
+				ipPermission.SetToPort(to64)
+			}
+			
+			if v["cidr_blocks"].(string) != "" {
+				tmp := []*computing.RequestIpRangesStruct {
+					{
+						CidrIp: nifcloud.String(v["cidr_blocks"].(string)),
+					},
+				}
+				ipPermission.SetRequestIpRanges(tmp)
+			}
+			
+			if v["security_groups"].(string) != "" {
+				tmp := []*computing.RequestGroupsStruct {
+					{
+						GroupName: nifcloud.String(v["security_groups"].(string)),
+					},
+				}
+				ipPermission.SetRequestGroups(tmp)
+			}
+
+			if v["protocol"].(string) != "" {
+				ipPermission.SetIpProtocol(v["protocol"].(string))
+			}
+
+			if v["inout"].(string) != "" {
+				ipPermission.SetInOut(v["inout"].(string))
+			}
 		}
+		ipPermissions = append(ipPermissions, ipPermission)
 	}
 
 	return ipPermissions
