@@ -31,17 +31,22 @@ variable "privatelan_example" {
 }
 
 # https://pfs.nifcloud.com/api/rest/CreateSecurityGroup.htm
-variable "firewallgroup_example" {
+variable "firewallgroup_example_web" {
   default = {
     name = "exampleweb"
-    memo = "test"
+    memo = "testweb"
+  }
+}
+variable "firewallgroup_example_db" {
+  default = {
+    name = "exampledb"
+    memo = "testdb"
   }
 }
 
 variable "admin_user_name" {
   default = "nifadmin"
 }
-
 variable "def_pass" {}
 
 # Create : https://pfs.nifcloud.com/api/rest/RunInstances.htm
@@ -56,7 +61,6 @@ variable "instance_cent" {
     user_data   = "userdata/cent7"
   }
 }
-
 variable "instance_win" {
   default = {
     count       = "1"
@@ -66,10 +70,6 @@ variable "instance_win" {
     memo        = "examplewin"
     user_data   = "userdata/win2019"
   }
-}
-
-variable "firewall_group_web" {
-  default = ["Zenkai"]
 }
 
 # Create : https://pfs.nifcloud.com/api/rest/CreateVolume.htm
@@ -82,7 +82,6 @@ variable "volume_cent" {
     memo      = "example001"
   }
 }
-
 variable "volume_win" {
   default = {
     name      = "example002"

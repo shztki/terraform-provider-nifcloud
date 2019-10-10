@@ -41,9 +41,9 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 		},
 
 		Timeouts: &schema.ResourceTimeout{
-			Create: schema.DefaultTimeout(1 * time.Minute),
-			Update: schema.DefaultTimeout(1 * time.Minute),
-			Delete: schema.DefaultTimeout(1 * time.Minute),
+			Create: schema.DefaultTimeout(10 * time.Minute),
+			Update: schema.DefaultTimeout(10 * time.Minute),
+			Delete: schema.DefaultTimeout(10 * time.Minute),
 		},
 
 		SchemaVersion: 1,
@@ -142,7 +142,7 @@ func resourceNifcloudSecurityGroupCreate(d *schema.ResourceData, meta interface{
 
 		ipPermissions := setSecurityGroupRule(d.Get("rules"))
 		log.Printf("[INFO] **********************************\n ipPermissions : %v\n ***************************", ipPermissions)
-		if ipPermissions != nil {
+		if ipPermissions != nil && len(ipPermissions) != 0 {
 			req := computing.AuthorizeSecurityGroupIngressInput{
 				GroupName: nifcloud.String(d.Id()),
 				IpPermissions: ipPermissions,

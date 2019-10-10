@@ -1,6 +1,7 @@
 package nifcloud
 
 import (
+	"github.com/hashicorp/terraform/helper/mutexkv"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
 )
@@ -37,11 +38,12 @@ func Provider() terraform.ResourceProvider {
 			// "nifcloud_instance": dataSourceInstance(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"nifcloud_instance":        resourceNifcloudInstance(),
-			"nifcloud_network":         resourceNifcloudNetwork(),
-			"nifcloud_volume":          resourceNifcloudVolume(),
-			"nifcloud_securitygroup":   resourceNifcloudSecurityGroup(),
-			"nifcloud_keypair":         resourceNifcloudKeyPair(),
+			"nifcloud_instance":             resourceNifcloudInstance(),
+			"nifcloud_network":              resourceNifcloudNetwork(),
+			"nifcloud_volume":               resourceNifcloudVolume(),
+			"nifcloud_securitygroup":        resourceNifcloudSecurityGroup(),
+			"nifcloud_securitygroup_rule":   resourceNifcloudSecurityGroupRule(),
+			"nifcloud_keypair":              resourceNifcloudKeyPair(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
@@ -57,3 +59,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	return config.Client()
 }
+
+// This is a global MutexKV for use within this plugin.
+var awsMutexKV = mutexkv.NewMutexKV()
