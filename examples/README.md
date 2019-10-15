@@ -10,12 +10,20 @@ TF_VAR_ssh_pubkey_path=`SSH公開鍵のファイルパス`
 ```
 
 ### コメント
-* 月末に近い場合は、従量で作成後、すぐに月額に一括変更可能(charge_type)
-* userdata の処理により、プライベートLAN の IPアドレスが設定された状態で作成可能(スクリプトの中身は都度修正必要)
-    * グローバルIP無しにする場合は、userdata でプライベートアドレスを設定する対象NIC が 1個目になる
-* ディスクはサーバー作成後に作成・アタッチされるため、自動のマウント処理がしたい場合は別途 Ansible等での対応が必要
-* ファイアウォールルールは、ニフクラ仕様により同時指定できないパラメータや、設定できない値(/32の指定)などがあるので注意
+* イメージID(スタンダード)については、 [CLI][1] を入れて以下コマンド実行するなどして特定する。
+	* 環境変数に `AWS_DEFAULT_REGION` も指定必要。
+
+```
+nifcloud-debugcli computing describe-images --query 'ImagesSet[?ImageOwnerId==`niftycloud`].[Name,ImageOwnerId,ImageId]'
+```
+
+* 月末に近い場合は、従量で作成後、すぐに月額に一括変更可能(charge_type)。
+* userdata の処理により、プライベートLAN の IPアドレスが設定された状態で作成可能(スクリプトの中身は都度修正必要)。
+	* グローバルIP無しにする場合は、userdata でプライベートアドレスを設定する対象NIC が 1個目になる。
+* ディスクはサーバー作成後に作成・アタッチされるため、自動のマウント処理がしたい場合は別途 Ansible等での対応が必要。
+* ファイアウォールルールは、ニフクラ仕様により同時指定できないパラメータや、設定できない値(/32の指定)などがあるので注意。
 * `nifcloud_securitygroup` でも `rules` の指定でポリシー作成が可能だが、変更するとすべて削除、改めて全体を新規作成、という仕様になります。このため `nifcloud_securitygroup` ではグループを作成するのみにとどめ、 `nifcloud_securitygroup_rule` にて別途ルールをアタッチしていくやり方を推奨。
+
 
 ### 作成状況
 | リソース | ステータス |
@@ -26,3 +34,5 @@ TF_VAR_ssh_pubkey_path=`SSH公開鍵のファイルパス`
 | ディスク | ok |
 | ファイアウォール | ok |
 | ファイアウォールグループルール | ok |
+
+[1]:https://github.com/nifcloud/nifcloud-sdk-python

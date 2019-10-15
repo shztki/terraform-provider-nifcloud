@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/shztki/nifcloud-sdk-go/nifcloud/awserr"
-	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 // Returns true if the error matches all these conditions:

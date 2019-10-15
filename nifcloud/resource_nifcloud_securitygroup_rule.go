@@ -2,10 +2,10 @@ package nifcloud
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
-	"github.com/hashicorp/terraform/helper/hashcode"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/hashcode"
 	"github.com/shztki/nifcloud-sdk-go/nifcloud"
 	"github.com/shztki/nifcloud-sdk-go/nifcloud/awserr"
 	"github.com/shztki/nifcloud-sdk-go/service/computing"
@@ -122,7 +122,7 @@ func resourceNifcloudSecurityGroupRuleCreate(d *schema.ResourceData, meta interf
 
 	d.SetId(id)
 
-	err = resource.Retry(5*time.Minute, func() *resource.RetryError {
+	err = resource.Retry(8*time.Minute, func() *resource.RetryError {
 		sg, err := findResourceSecurityGroup(conn, sgID)
 
 		if err != nil {

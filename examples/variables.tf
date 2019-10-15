@@ -55,7 +55,7 @@ variable "instance_cent" {
   default = {
     count       = "1"
     name        = "examplecent"
-    imageid     = "183" # 186:win2019std, 183:cent7.6
+    imageid     = "183" # 186:win2019std, # 157:win2016std, # 183:cent7.6, # 168:ubuntu18.04
     server_type = "e-small"
     memo        = "examplecent"
     user_data   = "userdata/cent7"
@@ -65,7 +65,7 @@ variable "instance_win" {
   default = {
     count       = "1"
     name        = "examplewin"
-    imageid     = "186" # 186:win2019std, 183:cent7.6
+    imageid     = "186" # 186:win2019std, # 157:win2016std, # 183:cent7.6, # 168:ubuntu18.04
     server_type = "e-small"
     memo        = "examplewin"
     user_data   = "userdata/win2019"

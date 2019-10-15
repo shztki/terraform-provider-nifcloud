@@ -2,9 +2,9 @@ package nifcloud
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/shztki/nifcloud-sdk-go/nifcloud"
 	"github.com/shztki/nifcloud-sdk-go/nifcloud/awserr"
 	"github.com/shztki/nifcloud-sdk-go/service/computing"
@@ -44,9 +44,9 @@ func resourceNifcloudInstance() *schema.Resource {
 		SchemaVersion: 1,
 
 		Timeouts: &schema.ResourceTimeout{
-			Create: schema.DefaultTimeout(5 * time.Minute),
-			Update: schema.DefaultTimeout(5 * time.Minute),
-			Delete: schema.DefaultTimeout(10 * time.Minute),
+			Create: schema.DefaultTimeout(15 * time.Minute),
+			Update: schema.DefaultTimeout(15 * time.Minute),
+			Delete: schema.DefaultTimeout(20 * time.Minute),
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -305,7 +305,10 @@ func resourceNifcloudInstanceDelete(d *schema.ResourceData, meta interface{}) er
 		InstanceId: []*string{nifcloud.String(d.Id())},
 	}
 	if _, err := conn.TerminateInstances(&terminateInstancesInput); err != nil {
-		return fmt.Errorf("Error TerminateInstances: %s", err)
+		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidInstanceID.NotFound" {
+			return nil
+		}
+		return fmt.Errorf("Error terminating instance: %s", err)
 	}
 
 	log.Printf("[DEBUG] Waiting for instance (%s) to become terminate", d.Id())
