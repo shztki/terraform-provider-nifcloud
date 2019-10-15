@@ -49,6 +49,6 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 1. terraform 0.12 で動作確認中...
 
 [1]:https://github.com/alice02/nifcloud-sdk-go
-[2]:https://github.com/shztki/terraform-provider-nifcloud
+[2]:https://github.com/kzmake/terraform-provider-nifcloud
 [3]:https://github.com/shztki/nifcloud-sdk-go
 [4]:https://blog.golang.org/using-go-modules

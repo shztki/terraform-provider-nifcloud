@@ -363,9 +363,10 @@ func resourceNifcloudInstanceUpdate(d *schema.ResourceData, meta interface{}) er
 
 	if d.HasChange("instance_type") {
 		_, err := conn.ModifyInstanceAttribute(&computing.ModifyInstanceAttributeInput{
-			InstanceId: nifcloud.String(d.Id()),
-			Attribute:  nifcloud.String("instanceType"),
-			Value:      nifcloud.String(d.Get("instance_type").(string)),
+			InstanceId:  nifcloud.String(d.Id()),
+			Attribute:   nifcloud.String("instanceType"),
+			Value:       nifcloud.String(d.Get("instance_type").(string)),
+//			NiftyReboot: nifcloud.Bool("true".(string)),
 		})
 		if err != nil {
 			return fmt.Errorf("Error ModifyInstanceAttribute: %s", err)
@@ -399,7 +400,7 @@ func resourceNifcloudInstanceUpdate(d *schema.ResourceData, meta interface{}) er
 		_, err := conn.ModifyInstanceAttribute(&computing.ModifyInstanceAttributeInput{
 			InstanceId:  nifcloud.String(d.Id()),
 			Attribute:   nifcloud.String("instanceName"),
-			NiftyReboot: nifcloud.String(d.Get("name").(string)),
+			Value:       nifcloud.String(d.Get("name").(string)),
 		})
 
 		if err != nil {
