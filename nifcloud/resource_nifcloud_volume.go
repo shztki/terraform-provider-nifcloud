@@ -10,7 +10,6 @@ import (
 	"github.com/shztki/nifcloud-sdk-go/service/computing"
 	"log"
 	"time"
-	"strconv"
 )
 
 func resourceNifcloudVolume() *schema.Resource {
@@ -23,9 +22,11 @@ func resourceNifcloudVolume() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
+		SchemaVersion: 1,
+
 		Schema: map[string]*schema.Schema{
 			"size": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Required: true,
 			},
 			"name": {
@@ -59,11 +60,8 @@ func resourceNifcloudVolume() *schema.Resource {
 func resourceNifcloudVolumeCreate(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*NifcloudClient).computingconn
 
-	var s64 int64
-	s64, _ = strconv.ParseInt(d.Get("size").(string),10,64)
-
 	request := &computing.CreateVolumeInput{
-		Size:           nifcloud.Int64(s64),
+		Size:           nifcloud.Int64(int64(d.Get("size").(int))),
 		VolumeId:       nifcloud.String(d.Get("name").(string)),
 		DiskType:       nifcloud.String(d.Get("disk_type").(string)),
 		InstanceId:     nifcloud.String(d.Get("instance_id").(string)),

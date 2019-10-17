@@ -9,8 +9,11 @@ import (
 	"github.com/shztki/nifcloud-sdk-go/nifcloud/awserr"
 	"github.com/shztki/nifcloud-sdk-go/service/computing"
 	"log"
-	"strconv"
 	"time"
+	"strconv"
+	"crypto/sha1"
+	"encoding/base64"
+	"encoding/hex"
 )
 
 func resourceNifcloudInstance() *schema.Resource {
@@ -168,6 +171,15 @@ func resourceNifcloudInstance() *schema.Resource {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
+				StateFunc: func(v interface{}) string {
+					switch v := v.(type) {
+					case string:
+						return userDataHashSum(v)
+					default:
+						return ""
+					}
+				},
+				ValidateFunc: validation.StringLenBetween(0, 6144),
 			},
 			"ip_address": {
 				Type:     schema.TypeString,
@@ -223,7 +235,7 @@ func resourceNifcloudInstanceCreate(d *schema.ResourceData, meta interface{}) er
 		ImageId:               nifcloud.String(d.Get("image_id").(string)),
 		KeyName:               nifcloud.String(d.Get("key_name").(string)),
 		SecurityGroup:         securityGroups,
-		UserData:              nifcloud.String(d.Get("user_data").(string)),
+		UserData:              nifcloud.String(base64Encode([]byte(d.Get("user_data").(string)))),
 		InstanceType:          nifcloud.String(d.Get("instance_type").(string)),
 		Placement:             &computing.RequestPlacementStruct{AvailabilityZone: nifcloud.String(d.Get("availability_zone").(string))},
 		DisableApiTermination: nifcloud.Bool(d.Get("disable_api_termination").(bool)),
@@ -642,4 +654,17 @@ func setInstanceResourceData(d *schema.ResourceData, meta interface{}, reservati
 	}
 
 	return nil
+}
+
+func userDataHashSum(userData string) string {
+	// Check whether the user_data is not Base64 encoded.
+	// Always calculate hash of base64 decoded value since we
+	// check against double-encoding when setting it
+	v, base64DecodeError := base64.StdEncoding.DecodeString(userData)
+	if base64DecodeError != nil {
+		v = []byte(userData)
+	}
+
+	hash := sha1.Sum(v)
+	return hex.EncodeToString(hash[:])
 }

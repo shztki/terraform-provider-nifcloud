@@ -23,6 +23,8 @@ nifcloud-debugcli computing describe-images --query 'ImagesSet[?ImageOwnerId==`n
 * ディスクはサーバー作成後に作成・アタッチされるため、自動のマウント処理がしたい場合は別途 Ansible等での対応が必要。
 * ファイアウォールルールは、ニフクラ仕様により同時指定できないパラメータや、設定できない値(/32の指定)などがあるので注意。
 * `nifcloud_securitygroup` でも `rules` の指定でポリシー作成が可能だが、変更するとすべて削除、改めて全体を新規作成、という仕様になります。このため `nifcloud_securitygroup` ではグループを作成するのみにとどめ、 `nifcloud_securitygroup_rule` にて別途ルールをアタッチしていくやり方を推奨。
+* `nifcloud_instancebackup_rule` でディスクが増設されたサーバーを対象にしたい場合は、 `depends_on` でボリュームが作成されるまで待つようにすること。でないとタイミングによってはボリューム作成より前にバックアップルールが作成されてしまい、ボリュームが作成できなくなります。
+* バックアップルールの変更については、なんらかの処理中だとエラーが返されます。初回設定時は同時にバックアップも走るため、ステータスが available にならない限りは変更できないので注意。
 
 
 ### 作成状況
@@ -34,5 +36,17 @@ nifcloud-debugcli computing describe-images --query 'ImagesSet[?ImageOwnerId==`n
 | ディスク | ok |
 | ファイアウォール | ok |
 | ファイアウォールグループルール | ok |
+| バックアップ | ok |
+| ロードバランサ | 検討中... |
+| マルチロードバランサー | 検討中... |
+| 付替IPアドレス | 検討中... |
+| 追加NIC | 検討中... |
+| 基本監視 | 検討中... |
+| ルーター | 検討中... |
+| 拠点間VPNゲートウェイ | 検討中... |
+| サーバーセパレート | 検討中... |
+| RDB | 検討中... |
+| NAS | 検討中... |
+
 
 [1]:https://github.com/nifcloud/nifcloud-sdk-python

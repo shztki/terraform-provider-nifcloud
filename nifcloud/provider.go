@@ -44,6 +44,7 @@ func Provider() terraform.ResourceProvider {
 			"nifcloud_securitygroup":        resourceNifcloudSecurityGroup(),
 			"nifcloud_securitygroup_rule":   resourceNifcloudSecurityGroupRule(),
 			"nifcloud_keypair":              resourceNifcloudKeyPair(),
+			"nifcloud_instancebackup_rule":  resourceNifcloudInstanceBackupRule(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

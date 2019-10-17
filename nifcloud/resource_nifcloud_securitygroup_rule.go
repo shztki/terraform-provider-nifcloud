@@ -13,7 +13,6 @@ import (
 	"time"
 	"bytes"
 	"strings"
-	"strconv"
 )
 
 func resourceNifcloudSecurityGroupRule() *schema.Resource {
@@ -26,7 +25,7 @@ func resourceNifcloudSecurityGroupRule() *schema.Resource {
 
 		SchemaVersion: 1,
 
-        Schema: map[string]*schema.Schema{
+		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,
 				Required:      true,
@@ -41,12 +40,12 @@ func resourceNifcloudSecurityGroupRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"from_port": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeInt,
 							Optional: true,
 						},
 
 						"to_port": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeInt,
 							Optional: true,
 						},
 
@@ -106,7 +105,7 @@ func resourceNifcloudSecurityGroupRuleCreate(d *schema.ResourceData, meta interf
 	log.Printf("[DEBUG] Authorize rule for Security Group for %s", sgID)
 	log.Printf("[INFO] **********************************\n ipPermissions : %v\n ***************************", perm)
 	req := computing.AuthorizeSecurityGroupIngressInput{
-		GroupName: nifcloud.String(sgID),
+		GroupName:     nifcloud.String(sgID),
 		IpPermissions: perm,
 	}
 
@@ -122,7 +121,7 @@ func resourceNifcloudSecurityGroupRuleCreate(d *schema.ResourceData, meta interf
 
 	d.SetId(id)
 
-	err = resource.Retry(8*time.Minute, func() *resource.RetryError {
+	err = resource.Retry(20*time.Minute, func() *resource.RetryError {
 		sg, err := findResourceSecurityGroup(conn, sgID)
 
 		if err != nil {
@@ -245,7 +244,7 @@ func resourceNifcloudSecurityGroupRuleRead(d *schema.ResourceData, meta interfac
 	var rule *computing.IpPermissionsSetItem
 	var rules []*computing.IpPermissionsSetItem
 	rules = sg.IpPermissions
-	log.Printf("[DEBUG] Rules %v", rules)
+//	log.Printf("[DEBUG] Rules %v", rules)
 
 	perm := expandIPPerm(d.Get("rules"))
 	if perm == nil {
@@ -338,11 +337,11 @@ func (err securityGroupNotFound) Error() string {
 func findRuleMatch(p *computing.RequestIpPermissionsStruct, rules []*computing.IpPermissionsSetItem) *computing.IpPermissionsSetItem {
 	var rule *computing.IpPermissionsSetItem
 	for _, r := range rules {
-		if p.ToPort != nil && r.ToPort != nil && *p.ToPort != *r.ToPort && *p.IpProtocol != *r.IpProtocol {
+		if p.ToPort != nil && r.ToPort != nil && *p.ToPort != *r.ToPort {
 			continue
 		}
 
-		if p.FromPort != nil && r.FromPort != nil && *p.FromPort != *r.FromPort && *p.IpProtocol != *r.IpProtocol {
+		if p.FromPort != nil && r.FromPort != nil && *p.FromPort != *r.FromPort {
 			continue
 		}
 
@@ -453,19 +452,13 @@ func expandIPPerm(d interface{}) []*computing.RequestIpPermissionsStruct {
 
 			case "TCP":
 				perm.SetIpProtocol(protocol)
-				var from64,to64 int64
-				from64, _ = strconv.ParseInt(v["from_port"].(string),10,64)
-				to64, _ = strconv.ParseInt(v["to_port"].(string),10,64)
-				perm.SetFromPort(int64(from64))
-				perm.SetToPort(int64(to64))
+				perm.SetFromPort(int64(v["from_port"].(int)))
+				perm.SetToPort(int64(v["to_port"].(int)))
 
 			case "UDP":
 				perm.SetIpProtocol(protocol)
-				var from64,to64 int64
-				from64, _ = strconv.ParseInt(v["from_port"].(string),10,64)
-				to64, _ = strconv.ParseInt(v["to_port"].(string),10,64)
-				perm.SetFromPort(int64(from64))
-				perm.SetToPort(int64(to64))
+				perm.SetFromPort(int64(v["from_port"].(int)))
+				perm.SetToPort(int64(v["to_port"].(int)))
 
 			default:
 				perm.SetIpProtocol(protocol)

@@ -10,7 +10,6 @@ import (
 	"github.com/shztki/nifcloud-sdk-go/service/computing"
 	"log"
 	"time"
-	"strconv"
 )
 
 func resourceNifcloudSecurityGroup() *schema.Resource {
@@ -48,7 +47,7 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 
 		SchemaVersion: 1,
 
-        Schema: map[string]*schema.Schema{
+		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,
 				Required:      true,
@@ -67,12 +66,12 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"from_port": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeInt,
 							Optional: true,
 						},
 
 						"to_port": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeInt,
 							Optional: true,
 						},
 
@@ -141,7 +140,7 @@ func resourceNifcloudSecurityGroupCreate(d *schema.ResourceData, meta interface{
 		log.Printf("[DEBUG] Authorize default rule for Security Group for %s", d.Id())
 
 		ipPermissions := setSecurityGroupRule(d.Get("rules"))
-		log.Printf("[INFO] **********************************\n ipPermissions : %v\n ***************************", ipPermissions)
+//		log.Printf("[INFO] **********************************\n ipPermissions : %v\n ***************************", ipPermissions)
 		if ipPermissions != nil && len(ipPermissions) != 0 {
 			req := computing.AuthorizeSecurityGroupIngressInput{
 				GroupName: nifcloud.String(d.Id()),
@@ -223,9 +222,9 @@ func resourceNifcloudSecurityGroupUpdate(d *schema.ResourceData, meta interface{
 	if d.HasChange("rules") {
 		before, after := d.GetChange("rules")
 		ipPermissionsOld := setSecurityGroupRule(before)
-		log.Printf("[INFO] **********************************\n before ipPermissions : %v\n ***************************", ipPermissionsOld)
+//		log.Printf("[INFO] **********************************\n before ipPermissions : %v\n ***************************", ipPermissionsOld)
 		ipPermissionsNew := setSecurityGroupRule(after)
-		log.Printf("[INFO] **********************************\n after ipPermissions : %v\n ***************************", ipPermissionsNew)
+//		log.Printf("[INFO] **********************************\n after ipPermissions : %v\n ***************************", ipPermissionsNew)
 		if ipPermissionsOld != nil {
 			req := computing.RevokeSecurityGroupIngressInput{
 				GroupName: nifcloud.String(d.Id()),
@@ -337,12 +336,9 @@ func setSecurityGroupRule(permissions interface{}) []*computing.RequestIpPermiss
 				ipPermission.SetDescription(v["description"].(string))
 			}
 			
-			if v["from_port"].(string) != "" {
-				var from64,to64 int64
-				from64, _ = strconv.ParseInt(v["from_port"].(string),10,64)
-				to64, _ = strconv.ParseInt(v["to_port"].(string),10,64)
-				ipPermission.SetFromPort(from64)
-				ipPermission.SetToPort(to64)
+			if v["from_port"].(int) > 0 {
+				ipPermission.SetFromPort(int64(v["from_port"].(int)))
+				ipPermission.SetToPort(int64(v["to_port"].(int)))
 			}
 			
 			if v["cidr_blocks"].(string) != "" {

@@ -90,3 +90,22 @@ variable "volume_win" {
     memo      = "example002"
   }
 }
+
+# Create: https://pfs.nifcloud.com/api/rest/CreateInstanceBackupRule.htm
+variable "backup_cent_001" {
+  default = {
+    name      = "examplebackup1"
+    max_count = 7   # 1-10
+    time_slot = "3" # JST: 1 (0:00-1:59) | 2 (2:00-3:59) | 3 (4:00-5:59) | 4 (6:00-7:59) | 5 (8:00-9:59) | 6 (10:00-11:59) | 7 (12:00-13:59) | 8 (14:00-15:59) | 9 (16:00-17:59) | 10 (18:00-19:59) | 11 (20:00-21:59) | 12 (22:00-23:59)
+    memo      = "backuptest001"
+  }
+}
+
+variable "backup_win_001" {
+  default = {
+    name      = "examplebackup2"
+    max_count = 1   # 1-10
+    time_slot = "4" # JST: 1 (0:00-1:59) | 2 (2:00-3:59) | 3 (4:00-5:59) | 4 (6:00-7:59) | 5 (8:00-9:59) | 6 (10:00-11:59) | 7 (12:00-13:59) | 8 (14:00-15:59) | 9 (16:00-17:59) | 10 (18:00-19:59) | 11 (20:00-21:59) | 12 (22:00-23:59)
+    memo      = "backuptest002"
+  }
+}
