@@ -91,7 +91,7 @@ func resourceNifcloudImageRead(d *schema.ResourceData, meta interface{}) error {
 		var err error
 		res, err = conn.DescribeImages(&req)
 		if err != nil {
-			if err, ok := err.(awserr.Error); ok && err.Code() == "Client.InvalidParameterNotFound.ImageId" {
+			if err, ok := err.(awserr.Error); ok && err.Code() == "Client.InvalidParameterNotFound.Image" {
 				if d.IsNewResource() {
 					return resource.RetryableError(err)
 				}

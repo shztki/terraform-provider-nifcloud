@@ -122,3 +122,14 @@ variable "image_001" {
   }
 }
 
+# Create: https://pfs.nifcloud.com/api/rest/CreateCustomerGateway.htm
+variable "customer_gateway_001" {
+  default = {
+    name                = "examplecg1"
+    ip_address          = "0.0.0.0"
+    lan_side_ip_address = ""
+    lan_side_cidr_block = "192.168.201.0/24"
+    memo                = "example customer gateway 001"
+  }
+}
+

@@ -264,12 +264,8 @@ func resourceNifcloudVolumeDelete(d *schema.ResourceData, meta interface{}) erro
 	err := resource.Retry(5*time.Minute, func() *resource.RetryError {
 		_, err := conn.DeleteVolume(input)
 
-		if isAWSErr(err, "InvalidVolume.NotFound", "") {
+		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.Volume" {
 			return nil
-		}
-
-		if isAWSErr(err, "VolumeInUse", "") {
-			return resource.RetryableError(fmt.Errorf("EBS VolumeInUse - trying again while it detaches"))
 		}
 
 		if err != nil {
@@ -319,7 +315,7 @@ func resourceNifcloudVolumeDelete(d *schema.ResourceData, meta interface{}) erro
 		output, err = conn.DescribeVolumes(describeInput)
 	}
 
-	if isAWSErr(err, "InvalidVolume.NotFound", "") {
+	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.Volume" {
 		return nil
 	}
 

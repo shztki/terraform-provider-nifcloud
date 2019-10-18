@@ -46,6 +46,7 @@ func Provider() terraform.ResourceProvider {
 			"nifcloud_keypair":              resourceNifcloudKeyPair(),
 			"nifcloud_instancebackup_rule":  resourceNifcloudInstanceBackupRule(),
 			"nifcloud_image":                resourceNifcloudImage(),
+			"nifcloud_customer_gateway":     resourceNifcloudCustomerGateway(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
