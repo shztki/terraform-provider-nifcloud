@@ -185,6 +185,10 @@ func resourceNifcloudInstance() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"private_ip_address": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"unique_id": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -633,6 +637,7 @@ func setInstanceResourceData(d *schema.ResourceData, meta interface{}, reservati
 	d.Set("user_data", outUserData.UserData)
 //	d.Set("ip_type", instance.IpType)
 	d.Set("ip_address", instance.IpAddress)
+	d.Set("private_ip_address", instance.PrivateIpAddress)
 
 	d.Set("disable_api_termination", outDisableAPITermination.DisableApiTermination.Value)
 

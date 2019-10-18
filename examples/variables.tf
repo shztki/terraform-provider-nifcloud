@@ -109,3 +109,16 @@ variable "backup_win_001" {
     memo      = "backuptest002"
   }
 }
+
+# Create: https://pfs.nifcloud.com/api/rest/CreateImage.htm
+variable "image_001" {
+  default = {
+    name     = "exampleimage1"
+    region   = "west-1"
+    zone     = "west-12"
+    left     = true
+    instance = "testCent6"
+    memo     = "testCent6 OS Image"
+  }
+}
+

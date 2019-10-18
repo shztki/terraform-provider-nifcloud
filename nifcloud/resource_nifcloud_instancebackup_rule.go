@@ -56,9 +56,6 @@ func resourceNifcloudInstanceBackupRule() *schema.Resource {
 func resourceNifcloudInstanceBackupRuleCreate(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*NifcloudClient).computingconn
 
-//	var s64 int64
-//	s64, _ = strconv.ParseInt(d.Get("size").(string),10,64)
-
 	var instanceUniqueIDS []*string
 	if ius := d.Get("instance_unique_id").([]interface{}); ius != nil {
 		for _, v := range ius {

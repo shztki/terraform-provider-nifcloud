@@ -25,6 +25,8 @@ nifcloud-debugcli computing describe-images --query 'ImagesSet[?ImageOwnerId==`n
 * `nifcloud_securitygroup` でも `rules` の指定でポリシー作成が可能だが、変更するとすべて削除、改めて全体を新規作成、という仕様になります。このため `nifcloud_securitygroup` ではグループを作成するのみにとどめ、 `nifcloud_securitygroup_rule` にて別途ルールをアタッチしていくやり方を推奨。
 * `nifcloud_instancebackup_rule` でディスクが増設されたサーバーを対象にしたい場合は、 `depends_on` でボリュームが作成されるまで待つようにすること。でないとタイミングによってはボリューム作成より前にバックアップルールが作成されてしまい、ボリュームが作成できなくなります。
 * バックアップルールの変更については、なんらかの処理中だとエラーが返されます。初回設定時は同時にバックアップも走るため、ステータスが available にならない限りは変更できないので注意。
+* カスタマイズイメージの変更については、作成中だとエラーが返されます。作成完了までは時間がかかるため、ステータスが available にならない限りは変更できないので注意。
+	* 別のゾーンに作成した場合、数時間単位で追加の時間がかかるようなので、要注意。
 
 
 ### 作成状況
@@ -37,6 +39,7 @@ nifcloud-debugcli computing describe-images --query 'ImagesSet[?ImageOwnerId==`n
 | ファイアウォール | ok |
 | ファイアウォールグループルール | ok |
 | バックアップ | ok |
+| OSイメージ | ok |
 | ロードバランサ | 検討中... |
 | マルチロードバランサー | 検討中... |
 | 付替IPアドレス | 検討中... |
