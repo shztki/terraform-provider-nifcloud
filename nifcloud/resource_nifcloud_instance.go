@@ -382,7 +382,7 @@ func resourceNifcloudInstanceUpdate(d *schema.ResourceData, meta interface{}) er
 			InstanceId:  nifcloud.String(d.Id()),
 			Attribute:   nifcloud.String("instanceType"),
 			Value:       nifcloud.String(d.Get("instance_type").(string)),
-//			NiftyReboot: nifcloud.Bool("true".(string)),
+//			NiftyReboot: nifcloud.Bool(true),
 		})
 		if err != nil {
 			return fmt.Errorf("Error ModifyInstanceAttribute: %s", err)
@@ -535,7 +535,7 @@ func resourceNifcloudInstanceRead(d *schema.ResourceData, meta interface{}) erro
 	out, err := conn.DescribeInstances(&input)
 	if err != nil {
 		awsErr, ok := err.(awserr.Error)
-		if ok && awsErr.Code() == "Client.InvalidParameterNotFound.Instance" {
+		if ok && awsErr.Code() == "InvalidParameterNotFound.Instance" {
 			d.SetId("")
 			return nil
 		}
@@ -569,7 +569,7 @@ func InstanceStateRefreshFunc(meta interface{}, instanceID string, failStates []
 		out, err := conn.DescribeInstances(&input)
 
 		if err != nil {
-			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.Instance" {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.Instance" {
 				return "", "terminated", nil
 			}
 
@@ -605,7 +605,7 @@ func setInstanceResourceData(d *schema.ResourceData, meta interface{}, reservati
 
 	if err != nil {
 		awsErr, ok := err.(awserr.Error)
-		if ok && awsErr.Code() == "Client.InvalidParameterNotFound.Instance" {
+		if ok && awsErr.Code() == "InvalidParameterNotFound.Instance" {
 			d.SetId("")
 			return nil
 		}
@@ -619,7 +619,7 @@ func setInstanceResourceData(d *schema.ResourceData, meta interface{}, reservati
 
 	if err != nil {
 		awsErr, ok := err.(awserr.Error)
-		if ok && awsErr.Code() == "Client.InvalidParameterNotFound.Instance" {
+		if ok && awsErr.Code() == "InvalidParameterNotFound.Instance" {
 			d.SetId("")
 			return nil
 		}

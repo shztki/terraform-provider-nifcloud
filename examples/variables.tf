@@ -10,6 +10,11 @@ variable "charge_type" {
   default = "2" # 値 : 1 (月額課金) | 2 (従量課金) 
 }
 
+variable "admin_user_name" {
+  default = "nifadmin"
+}
+variable "def_pass" {}
+
 # Import : https://pfs.nifcloud.com/api/rest/ImportKeyPair.htm
 # Modiry : https://pfs.nifcloud.com/api/rest/NiftyModifyKeyPairAttribute.htm
 variable "ssh_pubkey_path" {}
@@ -25,12 +30,13 @@ variable "sshkey_example" {
 variable "privatelan_example" {
   default = {
     name = "example001"
-    cidr = "192.168.0.0/24"
+    cidr = "192.168.2.0/24"
     memo = "example001"
   }
 }
 
-# https://pfs.nifcloud.com/api/rest/CreateSecurityGroup.htm
+# Create: https://pfs.nifcloud.com/api/rest/CreateSecurityGroup.htm
+# Modify: https://pfs.nifcloud.com/api/rest/UpdateSecurityGroup.htm
 variable "firewallgroup_example_web" {
   default = {
     name = "exampleweb"
@@ -43,11 +49,12 @@ variable "firewallgroup_example_db" {
     memo = "testdb"
   }
 }
-
-variable "admin_user_name" {
-  default = "nifadmin"
+variable "firewallgroup_example_vpn" {
+  default = {
+    name = "examplevpn"
+    memo = "testvpn"
+  }
 }
-variable "def_pass" {}
 
 # Create : https://pfs.nifcloud.com/api/rest/RunInstances.htm
 # Modify : https://pfs.nifcloud.com/api/rest/ModifyInstanceAttribute.htm
@@ -65,8 +72,8 @@ variable "instance_win" {
   default = {
     count       = "1"
     name        = "examplewin"
-    imageid     = "186" # 186:win2019std, # 157:win2016std, # 183:cent7.6, # 168:ubuntu18.04
-    server_type = "e-small"
+    imageid     = "157" # 186:win2019std, # 157:win2016std, # 183:cent7.6, # 168:ubuntu18.04
+    server_type = "e-medium8"
     memo        = "examplewin"
     user_data   = "userdata/win2019"
   }
@@ -92,6 +99,7 @@ variable "volume_win" {
 }
 
 # Create: https://pfs.nifcloud.com/api/rest/CreateInstanceBackupRule.htm
+# Modify: https://pfs.nifcloud.com/api/rest/ModifyInstanceBackupRuleAttribute.htm
 variable "backup_cent_001" {
   default = {
     name      = "examplebackup1"
@@ -111,6 +119,7 @@ variable "backup_win_001" {
 }
 
 # Create: https://pfs.nifcloud.com/api/rest/CreateImage.htm
+# Modify: https://pfs.nifcloud.com/api/rest/ModifyImageAttribute.htm
 variable "image_001" {
   default = {
     name     = "exampleimage1"
@@ -123,7 +132,8 @@ variable "image_001" {
 }
 
 # Create: https://pfs.nifcloud.com/api/rest/CreateCustomerGateway.htm
-variable "customer_gateway_001" {
+# Modify: https://pfs.nifcloud.com/api/rest/NiftyModifyCustomerGatewayAttribute.htm
+variable "customer_gateway_001" { # IPSec or IPSec VTI
   default = {
     name                = "examplecg1"
     ip_address          = "0.0.0.0"
@@ -132,4 +142,24 @@ variable "customer_gateway_001" {
     memo                = "example customer gateway 001"
   }
 }
+variable "customer_gateway_002" { # L2TPv3/IPSec
+  default = {
+    name                = "examplecg2"
+    ip_address          = "0.0.0.0"
+    lan_side_ip_address = ""
+    lan_side_cidr_block = ""
+    memo                = "l2tpv3 customer gateway 002"
+  }
+}
 
+# Create: https://pfs.nifcloud.com/api/rest/CreateVpnGateway.htm
+# Modify: https://pfs.nifcloud.com/api/rest/NiftyModifyVpnGatewayAttribute.htm
+#         https://pfs.nifcloud.com/api/rest/NiftyUpdateVpnGatewayNetworkInterfaces.htm
+variable "vpn_gateway_001" {
+  default = {
+    name               = "examplevg1"
+    private_ip_address = "192.168.2.254"
+    vpn_gateway_type   = "small"
+    memo               = "example vpn gateway 001"
+  }
+}

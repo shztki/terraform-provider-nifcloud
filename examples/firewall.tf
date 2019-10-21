@@ -221,3 +221,18 @@ resource "nifcloud_securitygroup_rule" "example_firewallgroup_002_rule_001" {
     inout           = "IN"
   }
 }
+
+resource "nifcloud_securitygroup" "example_firewallgroup_003" {
+  name        = "${lookup(var.firewallgroup_example_vpn, "name")}"
+  description = "${lookup(var.firewallgroup_example_vpn, "memo")}"
+
+  rules {
+    #from_port       = 80
+    #to_port         = 80
+    protocol    = "ANY"
+    cidr_blocks = "0.0.0.0/0"
+    #security_groups = "Zenkai"
+    description = "any"
+    inout       = "IN"
+  }
+}

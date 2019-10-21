@@ -111,7 +111,7 @@ func resourceNifcloudNetworkRead(d *schema.ResourceData, meta interface{}) error
 	})
 
 	if err != nil {
-		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.NetworkId" {
+		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidParameterNotFound.NetworkId" {
 			// Update state to indicate the subnet no longer exists.
 			d.SetId("")
 			return nil
@@ -246,7 +246,7 @@ func resourceNifcloudNetworkDelete(d *schema.ResourceData, meta interface{}) err
 						return 42, "pending", nil
 					}
 
-					if apiErr.Code() == "Client.InvalidParameterNotFound.NetworkId" {
+					if apiErr.Code() == "InvalidParameterNotFound.NetworkId" {
 						return 42, "destroyed", nil
 					}
 				}
@@ -272,7 +272,7 @@ func SubnetStateRefreshFunc(conn *computing.Computing, id string) resource.State
 			NetworkId: []*string{nifcloud.String(id)},
 		})
 		if err != nil {
-			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.NetworkId" {
+			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidParameterNotFound.NetworkId" {
 				resp = nil
 			} else {
 				log.Printf("Error on SubnetStateRefresh: %s", err)

@@ -47,6 +47,7 @@ func Provider() terraform.ResourceProvider {
 			"nifcloud_instancebackup_rule":  resourceNifcloudInstanceBackupRule(),
 			"nifcloud_image":                resourceNifcloudImage(),
 			"nifcloud_customer_gateway":     resourceNifcloudCustomerGateway(),
+			"nifcloud_vpn_gateway":          resourceNifcloudVpnGateway(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

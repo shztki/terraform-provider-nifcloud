@@ -50,6 +50,29 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 ##### examples/tffiles
 1. terraform 0.12 で動作確認中...
 
+## 作成状況
+| リソース | ステータス |
+|---|---|
+| SSHキーインポート | ok |
+| プライベートLAN | ok |
+| サーバー | ok |
+| ディスク | ok |
+| ファイアウォール | ok |
+| ファイアウォールグループルール | ok |
+| バックアップ | ok |
+| OSイメージ | ok |
+| 拠点間VPNゲートウェイ | 作成中... |
+| ロードバランサ | 検討中... |
+| マルチロードバランサー | 検討中... |
+| 付替IPアドレス | 検討中... |
+| 追加NIC | 検討中... |
+| 基本監視 | 検討中... |
+| ルーター | 検討中... |
+| サーバーセパレート | 検討中... |
+| RDB | 検討中... |
+| NAS | 検討中... |
+
+
 [1]:https://github.com/alice02/nifcloud-sdk-go
 [2]:https://github.com/kzmake/terraform-provider-nifcloud
 [3]:https://github.com/shztki/nifcloud-sdk-go

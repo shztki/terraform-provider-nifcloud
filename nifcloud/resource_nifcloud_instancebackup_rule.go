@@ -93,7 +93,7 @@ func resourceNifcloudInstanceBackupRuleRead(d *schema.ResourceData, meta interfa
 	}
 
 	out, err := conn.DescribeInstanceBackupRules(&input)
-	if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.InstanceBackupRuleId" {
+	if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidParameterNotFound.InstanceBackupRuleId" {
 		log.Printf("[WARN] InstanceBackupRule (%s) not found, removing from state", d.Id())
 		d.SetId("")
 		return nil
