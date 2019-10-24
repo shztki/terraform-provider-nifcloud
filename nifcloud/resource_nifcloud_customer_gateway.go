@@ -119,7 +119,7 @@ func customerGatewayRefreshFunc(conn *computing.Computing, gatewayID string) res
 			Filter: []*computing.RequestFilterStruct{gatewayFilter},
 		})
 		if err != nil {
-			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidParameterNotFound.CustomerGatewayId" {
+			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.CustomerGatewayId" {
 				resp = nil
 			} else {
 				log.Printf("Error on CustomerGatewayRefresh: %s", err)
@@ -169,7 +169,7 @@ func resourceNifcloudCustomerGatewayRead(d *schema.ResourceData, meta interface{
 		Filter: []*computing.RequestFilterStruct{gatewayFilter},
 	})
 	if err != nil {
-		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidParameterNotFound.CustomerGatewayId" {
+		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.CustomerGatewayId" {
 			d.SetId("")
 			return nil
 		}
@@ -235,16 +235,33 @@ func resourceNifcloudCustomerGatewayUpdate(d *schema.ResourceData, meta interfac
 func resourceNifcloudCustomerGatewayDelete(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*NifcloudClient).computingconn
 
+	request := &computing.DeleteCustomerGatewayInput{
+		CustomerGatewayId: nifcloud.String(d.Id()),
+	}
+	err := resource.Retry(5*time.Minute, func() *resource.RetryError {
+		resp, err := conn.DeleteCustomerGateway(request)
+		log.Printf("[DEBUG] deleting customer gateway %v", resp)
+
+		if err != nil {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.CustomerGatewayId" {
+				return nil
+			}
+			return resource.RetryableError(err)
+		}
+
+		return nil
+	})
+/*
 	_, err := conn.DeleteCustomerGateway(&computing.DeleteCustomerGatewayInput{
 		CustomerGatewayId: nifcloud.String(d.Id()),
 	})
 	if err != nil {
-		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.CustomerGatewayId" {
+		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.CustomerGatewayId" {
 			return nil
 		}
 		return fmt.Errorf("[ERROR] Error deleting CustomerGateway: %s", err)
 	}
-
+*/
 	gatewayFilter := &computing.RequestFilterStruct{
 		Name:         nifcloud.String("customer-gateway-id"),
 		RequestValue: []*string{nifcloud.String(d.Id())},
@@ -258,7 +275,7 @@ func resourceNifcloudCustomerGatewayDelete(d *schema.ResourceData, meta interfac
 		log.Printf("[DEBUG] delete after describe 001 %v", resp)
 
 		if err != nil {
-			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.CustomerGatewayId" {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.CustomerGatewayId" {
 				return nil
 			}
 			return resource.NonRetryableError(err)
@@ -294,9 +311,9 @@ func checkCustomerGatewayDeleteResponse(resp *computing.DescribeCustomerGateways
 	}
 
 	switch *resp.CustomerGatewaySet[0].State {
-	case "pending", "available":
+	case "available":
 		return fmt.Errorf("Gateway (%s) in state (%s), retrying", id, *resp.CustomerGatewaySet[0].State)
-	case "stopped":
+	case "pending":
 		return nil
 	default:
 		return fmt.Errorf("Unrecognized state (%s) for Customer Gateway delete on (%s)", *resp.CustomerGatewaySet[0].State, id)

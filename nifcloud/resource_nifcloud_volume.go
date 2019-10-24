@@ -222,7 +222,7 @@ func resourceNifcloudVolumeRead(d *schema.ResourceData, meta interface{}) error 
 
 	response, err := conn.DescribeVolumes(request)
 	if err != nil {
-		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidParameterNotFound.Volume" {
+		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.Volume" {
 			d.SetId("")
 			return nil
 		}
@@ -264,7 +264,7 @@ func resourceNifcloudVolumeDelete(d *schema.ResourceData, meta interface{}) erro
 	err := resource.Retry(5*time.Minute, func() *resource.RetryError {
 		_, err := conn.DeleteVolume(input)
 
-		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.Volume" {
+		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.Volume" {
 			return nil
 		}
 
@@ -315,7 +315,7 @@ func resourceNifcloudVolumeDelete(d *schema.ResourceData, meta interface{}) erro
 		output, err = conn.DescribeVolumes(describeInput)
 	}
 
-	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.Volume" {
+	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.Volume" {
 		return nil
 	}
 

@@ -289,7 +289,7 @@ func findResourceSecurityGroup(conn *computing.Computing, id string) (*computing
 	out, err := conn.DescribeSecurityGroups(&input)
 	if err != nil {
 		awsErr, ok := err.(awserr.Error)
-		if ok && awsErr.Code() == "InvalidParameterNotFound.SecurityGroup" {
+		if ok && awsErr.Code() == "Client.InvalidParameterNotFound.SecurityGroup" {
 			return nil, err
 		}
 		return nil, fmt.Errorf("Couldn't find SecurityGroup resource: %s", err)
@@ -304,7 +304,7 @@ func findResourceSecurityGroup(conn *computing.Computing, id string) (*computing
 	}
 
 	resp, err := conn.DescribeSecurityGroups(&req)
-	if err, ok := err.(awserr.Error); ok && err.Code() == "InvalidParameterNotFound.SecurityGroup" {
+	if err, ok := err.(awserr.Error); ok && err.Code() == "Client.InvalidParameterNotFound.SecurityGroup" {
 		return nil, securityGroupNotFound{id, nil}
 	}
 	if err != nil {

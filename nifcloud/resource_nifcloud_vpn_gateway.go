@@ -141,7 +141,7 @@ func vpnGatewayRefreshFunc(conn *computing.Computing, gatewayID string) resource
 			Filter: []*computing.RequestFilterStruct{gatewayFilter},
 		})
 		if err != nil {
-			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidParameterNotFound.VpnGatewayId" {
+			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.VpnGatewayId" {
 				resp = nil
 			} else {
 				log.Printf("Error on VpnGatewayRefresh: %s", err)
@@ -191,7 +191,7 @@ func resourceNifcloudVpnGatewayRead(d *schema.ResourceData, meta interface{}) er
 		Filter: []*computing.RequestFilterStruct{gatewayFilter},
 	})
 	if err != nil {
-		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "InvalidParameterNotFound.VpnGatewayId" {
+		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.VpnGatewayId" {
 			d.SetId("")
 			return nil
 		}
@@ -408,16 +408,33 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 func resourceNifcloudVpnGatewayDelete(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*NifcloudClient).computingconn
 
+	request := &computing.DeleteVpnGatewayInput{
+		VpnGatewayId: nifcloud.String(d.Id()),
+	}
+	err := resource.Retry(5*time.Minute, func() *resource.RetryError {
+		resp, err := conn.DeleteVpnGateway(request)
+		log.Printf("[DEBUG] deleting vpn gateway %v", resp)
+
+		if err != nil {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.VpnGatewayId" {
+				return nil
+			}
+			return resource.RetryableError(err)
+		}
+
+		return nil
+	})
+/*
 	_, err := conn.DeleteVpnGateway(&computing.DeleteVpnGatewayInput{
 		VpnGatewayId: nifcloud.String(d.Id()),
 	})
 	if err != nil {
-		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.VpnGatewayId" {
+		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.VpnGatewayId" {
 			return nil
 		}
 		return fmt.Errorf("[ERROR] Error deleting VpnGateway: %s", err)
 	}
-
+*/
 	gatewayFilter := &computing.RequestFilterStruct{
 		Name:         nifcloud.String("vpn-gateway-id"),
 		RequestValue: []*string{nifcloud.String(d.Id())},
@@ -431,15 +448,15 @@ func resourceNifcloudVpnGatewayDelete(d *schema.ResourceData, meta interface{}) 
 		log.Printf("[DEBUG] delete after describe 001 %v", resp)
 
 		if err != nil {
-			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.VpnGatewayId" {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.VpnGatewayId" {
 				return nil
 			}
-			return resource.NonRetryableError(err)
+			return resource.RetryableError(err)
 		}
 
 		err = checkVpnGatewayDeleteResponse(resp, d.Id())
 		if err != nil {
-			return resource.RetryableError(err)
+			return resource.NonRetryableError(err)
 		}
 		return nil
 	})
@@ -467,9 +484,9 @@ func checkVpnGatewayDeleteResponse(resp *computing.DescribeVpnGatewaysOutput, id
 	}
 
 	switch *resp.VpnGatewaySet[0].State {
-	case "pending", "available":
+	case "available":
 		return fmt.Errorf("Gateway (%s) in state (%s), retrying", id, *resp.VpnGatewaySet[0].State)
-	case "stopped":
+	case "pending":
 		return nil
 	default:
 		return fmt.Errorf("Unrecognized state (%s) for Vpn Gateway delete on (%s)", *resp.VpnGatewaySet[0].State, id)

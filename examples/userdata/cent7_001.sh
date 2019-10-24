@@ -7,7 +7,7 @@ echo "DEVICE=ens192
 ONBOOT=yes
 BOOTPROTO=static
 NETMASK=255.255.255.0
-IPADDR=192.168.0.10" > /etc/sysconfig/network-scripts/ifcfg-ens192
+IPADDR=192.168.2.10" > /etc/sysconfig/network-scripts/ifcfg-ens192
 ifdown ens192; ifup ens192
 
 ## MASQUERADE

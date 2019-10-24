@@ -168,16 +168,16 @@ func resourceNifcloudSecurityGroupDelete(d *schema.ResourceData, meta interface{
 	err := resource.Retry(d.Timeout(schema.TimeoutDelete), func() *resource.RetryError {
 		_, err := conn.DeleteSecurityGroup(&input)
 		if err != nil {
-			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.SecurityGroup" {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.SecurityGroup" {
 				return nil
 			}
-			resource.NonRetryableError(err)
+			resource.RetryableError(err)
 		}
 		return nil
 	})
 	if isResourceTimeoutError(err) {
 		_, err = conn.DeleteSecurityGroup(&input)
-		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "InvalidParameterNotFound.SecurityGroup" {
+		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.SecurityGroup" {
 			return nil
 		}
 	}
@@ -260,7 +260,7 @@ func resourceNifcloudSecurityGroupRead(d *schema.ResourceData, meta interface{})
 	out, err := conn.DescribeSecurityGroups(&input)
 	if err != nil {
 		awsErr, ok := err.(awserr.Error)
-		if ok && awsErr.Code() == "InvalidParameterNotFound.SecurityGroup" {
+		if ok && awsErr.Code() == "Client.InvalidParameterNotFound.SecurityGroup" {
 			d.SetId("")
 			return nil
 		}
@@ -291,7 +291,7 @@ func SGStateRefreshFunc(conn *computing.Computing, id string) resource.StateRefr
 		resp, err := conn.DescribeSecurityGroups(&req)
 		if err != nil {
 			if ec2err, ok := err.(awserr.Error); ok {
-				if ec2err.Code() == "InvalidParameterNotFound.SecurityGroup" {
+				if ec2err.Code() == "Client.InvalidParameterNotFound.SecurityGroup" {
 					resp = nil
 					err = nil
 				}

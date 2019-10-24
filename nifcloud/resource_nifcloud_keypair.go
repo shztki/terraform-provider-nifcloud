@@ -110,7 +110,7 @@ func resourceNifcloudKeyPairRead(d *schema.ResourceData, meta interface{}) error
 	resp, err := conn.DescribeKeyPairs(req)
 	if err != nil {
 		awsErr, ok := err.(awserr.Error)
-		if ok && awsErr.Code() == "InvalidParameterNotFound.KeyPair" {
+		if ok && awsErr.Code() == "Client.InvalidParameterNotFound.KeyPair" {
 			d.SetId("")
 			return nil
 		}

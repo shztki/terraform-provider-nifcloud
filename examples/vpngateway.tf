@@ -25,3 +25,54 @@ resource "nifcloud_vpn_gateway" "example_vpn_gateway_001" {
   description        = "${lookup(var.vpn_gateway_001, "memo")}"
 }
 
+resource "nifcloud_vpn_connection" "example_vpn_connection_001" {
+  vpn_gateway_id      = "${nifcloud_vpn_gateway.example_vpn_gateway_001.id}"
+  customer_gateway_id = "${nifcloud_customer_gateway.example_customer_gateway_001.id}"
+  type                = "${lookup(var.vpn_connection_001, "type")}" # IPsec | L2TPv3 /IPsec | IPsec VTI
+  description         = "${lookup(var.vpn_connection_001, "memo")}"
+  ipsec {
+    dh                   = 14       # 2 (1024-bit MODP group) | 5 (1536-bit MODP group) | 14 (2048-bit MODP group) | 15 (3072-bit MODP group) | 16 (4096-bit MODP group) | 17 (6144-bit MODP group) | 18 (8192-bit MODP group) | 19 (256-bit random ECP group) | 20 (384-bit random ECP group) | 21 (512-bit random ECP group) | 22 (1024-bit MODP Group with 160-bit Prime Order Subgroup) | 23 (2048-bit MODP Group with 224-bit Prime Order Subgroup) | 24 (2048-bit MODP Group with 256-bit Prime Order Subgroup) | 25 (192-bit Random ECP Group) | 26 (224-bit Random ECP Group)
+    esp_life_time        = 7200     # 30～86400
+    ike_life_time        = 57600    # 30～86400
+    encryption_algorithm = "AES256" # AES128 | AES256 | 3DES
+    hash_algorithm       = "SHA256" # SHA1 | MD5 | SHA256 | SHA384 | SHA512
+    ike_version          = "IKEv2"  # IKEv1 | IKEv2
+    pre_shared_key       = "test1023"
+  }
+  #depends_on = ["nifcloud_vpn_gateway.example_vpn_gateway_001", "nifcloud_customer_gateway.example_customer_gateway_001"]
+  lifecycle {
+    ignore_changes = [ipsec, tunnel]
+  }
+}
+
+resource "nifcloud_vpn_connection" "example_vpn_connection_002" {
+  vpn_gateway_id      = "${nifcloud_vpn_gateway.example_vpn_gateway_001.id}"
+  customer_gateway_id = "${nifcloud_customer_gateway.example_customer_gateway_002.id}"
+  type                = "${lookup(var.vpn_connection_002, "type")}" # IPsec | L2TPv3 /IPsec | IPsec VTI
+  description         = "${lookup(var.vpn_connection_002, "memo")}"
+  ipsec {
+    #    dh                   = 2
+    #    esp_life_time        = 3600     # 30～86400
+    #    ike_life_time        = 28800    # 30～86400
+    #    encryption_algorithm = "AES256" # AES128 | AES256 | 3DES
+    #    hash_algorithm       = "SHA1"   # SHA1 | MD5 | SHA256 | SHA384 | SHA512
+    #    ike_version          = "IKEv2"  # IKEv1 | IKEv2
+    #    pre_shared_key       = "test1023"
+  }
+  tunnel {
+    type             = "L2TPv3"    # L2TPv3
+    mode             = "Unmanaged" # Unmanaged | Managed
+    encapsulation    = "UDP"       # IP (NiftyTunnel.ModeがUnmanagedの場合のみ指定可) | UDP
+    mtu              = "1450"
+    peer_session_id  = "1111" # modeがUnmanagedの場合
+    peer_tunnel_id   = "2222" # modeがUnmanagedの場合
+    session_id       = "1111" # modeがUnmanagedの場合
+    tunnel_id        = "2222" # modeがUnmanagedの場合
+    destination_port = "1702" # modeがUnmanagedかつencapsulationがUDPの場合
+    source_port      = "1702" # modeがUnmanagedかつencapsulationがUDPの場合
+  }
+  #depends_on = ["nifcloud_vpn_gateway.example_vpn_gateway_001", "nifcloud_customer_gateway.example_customer_gateway_002"]
+  lifecycle {
+    ignore_changes = [ipsec, tunnel]
+  }
+}

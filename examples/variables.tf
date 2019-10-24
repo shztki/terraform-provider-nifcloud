@@ -73,7 +73,7 @@ variable "instance_win" {
     count       = "1"
     name        = "examplewin"
     imageid     = "157" # 186:win2019std, # 157:win2016std, # 183:cent7.6, # 168:ubuntu18.04
-    server_type = "e-medium8"
+    server_type = "e-small"
     memo        = "examplewin"
     user_data   = "userdata/win2019"
   }
@@ -136,7 +136,7 @@ variable "image_001" {
 variable "customer_gateway_001" { # IPSec or IPSec VTI
   default = {
     name                = "examplecg1"
-    ip_address          = "0.0.0.0"
+    ip_address          = "1.1.1.1"
     lan_side_ip_address = ""
     lan_side_cidr_block = "192.168.201.0/24"
     memo                = "example customer gateway 001"
@@ -145,7 +145,7 @@ variable "customer_gateway_001" { # IPSec or IPSec VTI
 variable "customer_gateway_002" { # L2TPv3/IPSec
   default = {
     name                = "examplecg2"
-    ip_address          = "0.0.0.0"
+    ip_address          = "1.1.1.2"
     lan_side_ip_address = ""
     lan_side_cidr_block = ""
     memo                = "l2tpv3 customer gateway 002"
@@ -161,5 +161,19 @@ variable "vpn_gateway_001" {
     private_ip_address = "192.168.2.254"
     vpn_gateway_type   = "small"
     memo               = "example vpn gateway 001"
+  }
+}
+
+# Create: https://pfs.nifcloud.com/api/rest/CreateVpnConnection.htm
+variable "vpn_connection_001" {
+  default = {
+    type = "IPsec" # IPsec or IPsec VTI 
+    memo = "example vpn connection 001"
+  }
+}
+variable "vpn_connection_002" {
+  default = {
+    type = "L2TPv3 / IPsec"
+    memo = "example vpn connection 002"
   }
 }

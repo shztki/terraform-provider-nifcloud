@@ -6,9 +6,9 @@ systemctl start httpd
 echo "DEVICE=ens160
 ONBOOT=yes
 BOOTPROTO=static
-GATEWAY=192.168.0.10
+GATEWAY=192.168.2.10
 NETMASK=255.255.255.0
-IPADDR=192.168.0.110" > /etc/sysconfig/network-scripts/ifcfg-ens160
+IPADDR=192.168.2.110" > /etc/sysconfig/network-scripts/ifcfg-ens160
 ifdown ens160; ifup ens160
 
 ## nifcloud ではディスクがあとからアタッチされるので、以下のような処理はuserdata不可
