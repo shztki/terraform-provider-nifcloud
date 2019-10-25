@@ -121,7 +121,7 @@ func resourceNifcloudSecurityGroupRuleCreate(d *schema.ResourceData, meta interf
 
 	d.SetId(id)
 
-	err = resource.Retry(20*time.Minute, func() *resource.RetryError {
+	err = resource.Retry(25*time.Minute, func() *resource.RetryError {
 		sg, err := findResourceSecurityGroup(conn, sgID)
 
 		if err != nil {

@@ -112,10 +112,10 @@ func resourceNifcloudVpnGatewayCreate(d *schema.ResourceData, meta interface{}) 
 
 	// Wait for the VpnGateway to be available.
 	stateConf := &resource.StateChangeConf{
-		Pending:    []string{"pending"},
-		Target:     []string{"available", "warning"},
+		Pending:    []string{"pending", "warning"},
+		Target:     []string{"available"},
 		Refresh:    vpnGatewayRefreshFunc(conn, *vpnGateway.VpnGatewayId),
-		Timeout:    10 * time.Minute,
+		Timeout:    15 * time.Minute,
 		Delay:      10 * time.Second,
 		MinTimeout: 3 * time.Second,
 	}
@@ -124,7 +124,7 @@ func resourceNifcloudVpnGatewayCreate(d *schema.ResourceData, meta interface{}) 
 	if stateErr != nil {
 		return fmt.Errorf(
 			"Error waiting for vpn gateway (%s) to become ready: %s",
-			*vpnGateway.VpnGatewayId, err)
+			*vpnGateway.VpnGatewayId, stateErr)
 	}
 
 	return nil
@@ -263,10 +263,10 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 
 		// Wait for the VpnGateway to be available.
 		stateConf := &resource.StateChangeConf{
-			Pending:    []string{"pending"},
-			Target:     []string{"available", "warning"},
+			Pending:    []string{"pending", "warning"},
+			Target:     []string{"available"},
 			Refresh:    vpnGatewayRefreshFunc(conn, d.Id()),
-			Timeout:    10 * time.Minute,
+			Timeout:    15 * time.Minute,
 			Delay:      10 * time.Second,
 			MinTimeout: 3 * time.Second,
 		}
@@ -275,7 +275,7 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 		if stateErr != nil {
 			return fmt.Errorf(
 				"Error waiting for vpn gateway (%s) to become ready: %s",
-				d.Id(), err)
+				d.Id(), stateErr)
 		}		
 	}
 	if d.HasChange("accounting_type") {
@@ -292,10 +292,10 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 
 		// Wait for the VpnGateway to be available.
 		stateConf := &resource.StateChangeConf{
-			Pending:    []string{"pending"},
-			Target:     []string{"available", "warning"},
+			Pending:    []string{"pending", "warning"},
+			Target:     []string{"available"},
 			Refresh:    vpnGatewayRefreshFunc(conn, d.Id()),
-			Timeout:    10 * time.Minute,
+			Timeout:    15 * time.Minute,
 			Delay:      10 * time.Second,
 			MinTimeout: 3 * time.Second,
 		}
@@ -304,7 +304,7 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 		if stateErr != nil {
 			return fmt.Errorf(
 				"Error waiting for vpn gateway (%s) to become ready: %s",
-				d.Id(), err)
+				d.Id(), stateErr)
 		}
 	}
 	if d.HasChange("security_groups") {
@@ -321,10 +321,10 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 
 		// Wait for the VpnGateway to be available.
 		stateConf := &resource.StateChangeConf{
-			Pending:    []string{"pending"},
-			Target:     []string{"available", "warning"},
+			Pending:    []string{"pending", "warning"},
+			Target:     []string{"available"},
 			Refresh:    vpnGatewayRefreshFunc(conn, d.Id()),
-			Timeout:    10 * time.Minute,
+			Timeout:    15 * time.Minute,
 			Delay:      10 * time.Second,
 			MinTimeout: 3 * time.Second,
 		}
@@ -333,7 +333,7 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 		if stateErr != nil {
 			return fmt.Errorf(
 				"Error waiting for vpn gateway (%s) to become ready: %s",
-				d.Id(), err)
+				d.Id(), stateErr)
 		}		
 	}
 	if d.HasChange("private_ip_address") {
@@ -355,10 +355,10 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 
 		// Wait for the VpnGateway to be available.
 		stateConf := &resource.StateChangeConf{
-			Pending:    []string{"pending"},
-			Target:     []string{"available", "warning"},
+			Pending:    []string{"pending", "warning"},
+			Target:     []string{"available"},
 			Refresh:    vpnGatewayRefreshFunc(conn, d.Id()),
-			Timeout:    10 * time.Minute,
+			Timeout:    15 * time.Minute,
 			Delay:      10 * time.Second,
 			MinTimeout: 3 * time.Second,
 		}
@@ -367,7 +367,7 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 		if stateErr != nil {
 			return fmt.Errorf(
 				"Error waiting for vpn gateway (%s) to become ready: %s",
-				d.Id(), err)
+				d.Id(), stateErr)
 		}		
 	}
 	if d.HasChange("vpn_gateway_type") {
@@ -384,10 +384,10 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 
 		// Wait for the VpnGateway to be available.
 		stateConf := &resource.StateChangeConf{
-			Pending:    []string{"pending"},
-			Target:     []string{"available", "warning"},
+			Pending:    []string{"pending", "warning"},
+			Target:     []string{"available"},
 			Refresh:    vpnGatewayRefreshFunc(conn, d.Id()),
-			Timeout:    10 * time.Minute,
+			Timeout:    15 * time.Minute,
 			Delay:      10 * time.Second,
 			MinTimeout: 3 * time.Second,
 		}
@@ -396,7 +396,7 @@ func resourceNifcloudVpnGatewayUpdate(d *schema.ResourceData, meta interface{}) 
 		if stateErr != nil {
 			return fmt.Errorf(
 				"Error waiting for vpn gateway (%s) to become ready: %s",
-				d.Id(), err)
+				d.Id(), stateErr)
 		}
 	}
 

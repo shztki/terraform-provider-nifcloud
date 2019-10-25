@@ -49,7 +49,7 @@ func resourceNifcloudInstance() *schema.Resource {
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(15 * time.Minute),
 			Update: schema.DefaultTimeout(15 * time.Minute),
-			Delete: schema.DefaultTimeout(20 * time.Minute),
+			Delete: schema.DefaultTimeout(30 * time.Minute),
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -291,6 +291,7 @@ func resourceNifcloudInstanceDelete(d *schema.ResourceData, meta interface{}) er
 
 	stopInstancesInput := computing.StopInstancesInput{
 		InstanceId: []*string{nifcloud.String(d.Id())},
+		Force:      nifcloud.Bool(true),
 	}
 	if _, err := conn.StopInstances(&stopInstancesInput); err != nil {
 		awsErr, ok := err.(awserr.Error)
