@@ -102,8 +102,8 @@ func resourceNifcloudSecurityGroupRuleCreate(d *schema.ResourceData, meta interf
 		return nil
 	}
 
-	log.Printf("[DEBUG] Authorize rule for Security Group for %s", sgID)
-	log.Printf("[INFO] **********************************\n ipPermissions : %v\n ***************************", perm)
+//	log.Printf("[DEBUG] Authorize rule for Security Group for %s", sgID)
+//	log.Printf("[INFO] **********************************\n ipPermissions : %v\n ***************************", perm)
 	req := computing.AuthorizeSecurityGroupIngressInput{
 		GroupName:     nifcloud.String(sgID),
 		IpPermissions: perm,
@@ -121,7 +121,7 @@ func resourceNifcloudSecurityGroupRuleCreate(d *schema.ResourceData, meta interf
 
 	d.SetId(id)
 
-	err = resource.Retry(25*time.Minute, func() *resource.RetryError {
+	err = resource.Retry(10*time.Minute, func() *resource.RetryError {
 		sg, err := findResourceSecurityGroup(conn, sgID)
 
 		if err != nil {

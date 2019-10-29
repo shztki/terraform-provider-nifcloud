@@ -171,7 +171,7 @@ func resourceNifcloudSecurityGroupDelete(d *schema.ResourceData, meta interface{
 			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.SecurityGroup" {
 				return nil
 			}
-			resource.RetryableError(err)
+			return resource.RetryableError(err)
 		}
 		return nil
 	})
@@ -317,7 +317,8 @@ func setSecurityGroupResourceData(d *schema.ResourceData, meta interface{}, out 
 
 	d.Set("name", securitygroup.GroupName)
 	d.Set("description", securitygroup.GroupDescription)
-	d.Set("rules", securitygroup.IpPermissions)
+//	d.Set("rules", securitygroup.IpPermissions)
+	d.Set("rules", d.Get("rules"))
 
 	return nil
 }
