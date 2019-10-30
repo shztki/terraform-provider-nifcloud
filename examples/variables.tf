@@ -187,3 +187,12 @@ variable "db_param_mariadb_10_1" {
     memo   = "testmaria"
   }
 }
+
+# Create: https://pfs.nifcloud.com/api/rdb/CreateDBSecurityGroup.htm
+#         https://pfs.nifcloud.com/api/rdb/AuthorizeDBSecurityGroupIngress.htm
+variable "db_security_001" {
+  default = {
+    name = "testmaria"
+    memo = "testmaria"
+  }
+}
