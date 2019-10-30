@@ -49,6 +49,7 @@ func Provider() terraform.ResourceProvider {
 			"nifcloud_customer_gateway":     resourceNifcloudCustomerGateway(),
 			"nifcloud_vpn_gateway":          resourceNifcloudVpnGateway(),
 			"nifcloud_vpn_connection":       resourceNifcloudVpnConnection(),
+			"nifcloud_db_parameter_group":   resourceNifcloudDbParameterGroup(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

@@ -177,3 +177,13 @@ variable "vpn_connection_002" {
     memo = "example vpn connection 002"
   }
 }
+
+# Create: https://pfs.nifcloud.com/api/rdb/CreateDBParameterGroup.htm
+#         https://pfs.nifcloud.com/api/rdb/ModifyDBParameterGroup.htm
+variable "db_param_mariadb_10_1" {
+  default = {
+    name   = "testmaria"
+    family = "mariadb10.1"
+    memo   = "testmaria"
+  }
+}

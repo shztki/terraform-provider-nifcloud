@@ -5,8 +5,8 @@
 
 ## 環境
 ```
-go version go1.13.1 linux/amd64
-Terraform v0.12.9
+go version go1.13.3 linux/amd64
+Terraform v0.12.12
 ```
 
 ## 作業環境準備
@@ -68,6 +68,7 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 | バックアップ | ok | |
 | OSイメージ | ok | |
 | 拠点間VPNゲートウェイ | ok | ルートテーブルは作っていません |
+| RDB | 作成中... | |
 | ロードバランサー | 検討中... | |
 | マルチロードバランサー | 検討中... | |
 | 付替IPアドレス | 検討中... | |
@@ -75,7 +76,6 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 | 基本監視 | 検討中... | |
 | ルーター | 検討中... | |
 | サーバーセパレート | 検討中... | |
-| RDB | 検討中... | |
 | NAS | 検討中... | |
 
 

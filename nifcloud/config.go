@@ -6,6 +6,7 @@ import (
 	"github.com/shztki/nifcloud-sdk-go/nifcloud/credentials"
 	"github.com/shztki/nifcloud-sdk-go/nifcloud/session"
 	"github.com/shztki/nifcloud-sdk-go/service/computing"
+	"github.com/shztki/nifcloud-sdk-go/service/rdb"
 )
 
 // Config is struct
@@ -19,6 +20,7 @@ type Config struct {
 // NifcloudClient is struct
 type NifcloudClient struct {
 	computingconn *computing.Computing
+	rdbconn       *rdb.Rdb
 }
 
 // Client is function
@@ -48,6 +50,7 @@ func (c *Config) Client() (interface{}, error) {
 	var client NifcloudClient
 
 	client.computingconn = computing.New(sess)
+	client.rdbconn = rdb.New(sess)
 
 	return &client, nil
 }
