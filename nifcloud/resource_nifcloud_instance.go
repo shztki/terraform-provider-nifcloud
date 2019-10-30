@@ -225,8 +225,8 @@ func resourceNifcloudInstanceCreate(d *schema.ResourceData, meta interface{}) er
 	if licensesSet, ok := d.GetOk("license"); ok {
 		for _, l := range licensesSet.(*schema.Set).List() {
 			license := &computing.RequestLicenseStruct{}
-            if v, ok := l.(map[string]interface{}); ok {
-		  		license.SetLicenseName(v["license_name"].(string))
+			if v, ok := l.(map[string]interface{}); ok {
+				license.SetLicenseName(v["license_name"].(string))
 				license.SetLicenseNum(v["license_num"].(string))
 			}
 
