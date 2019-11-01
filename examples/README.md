@@ -29,7 +29,12 @@ nifcloud-debugcli computing describe-images --query 'ImagesSet[?ImageOwnerId==`n
 * カスタマイズイメージの変更については、作成中だとエラーが返されます。ステータスが available にならない限りは変更できないので注意。
 * VPNコネクションは一切変更不可のリソースのため、Update処理は実装されていない。しかし、完全な ForceNew にはできていないため、 tunnel や ipsec に変更があると、変更処理をしようとしてしまうので、 ignore_changes が必須です。
 	* Readした情報をtfstateに戻している関係で、作成した瞬間から差分ありの状態になります。
-
+* RDBに関して厳密なパラメータのチェックは行っていないため、指定不可な組み合わせにした場合、異常が発生することがあるので、注意してください。
+	* プライベートLAN利用時
+		* master と virtual の両IPアドレス指定が必須です(かつ /** もつけること)。
+		* 冗長化(データ優先)を選択した場合、 slave の IPアドレスも指定が必要です。
+		* 冗長化(性能優先)は MySQL時のみ選択可能ですが、この場合は slave の指定は不可で、 replica の名前と IPアドレス指定が必須です。
+	* サンプルコード上ではいくつか `ignore_changes` を指定していますが、これには変更不可のものもあれば、特に指定しなかったために State の値と差分が生まれてしまったので抑制しているだけのものがあります。「新規作成、スナップショットからの作成、リードレプリカとしての作成」のそれぞれで、変更不可なものは異なるので、ご注意ください。
 
 [1]:https://github.com/nifcloud/nifcloud-sdk-python
 [2]:https://pfs.nifcloud.com/api/rest/AuthorizeSecurityGroupIngress.htm

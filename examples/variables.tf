@@ -179,12 +179,12 @@ variable "vpn_connection_002" {
 }
 
 # Create: https://pfs.nifcloud.com/api/rdb/CreateDBParameterGroup.htm
-#         https://pfs.nifcloud.com/api/rdb/ModifyDBParameterGroup.htm
-variable "db_param_mariadb_10_1" {
+# Modify: https://pfs.nifcloud.com/api/rdb/ModifyDBParameterGroup.htm
+variable "db_param_001" {
   default = {
-    name   = "testmaria"
-    family = "mariadb10.1"
-    memo   = "testmaria"
+    name   = "exampledb001"
+    family = "mysql5.7"
+    memo   = "exampledb001"
   }
 }
 
@@ -192,7 +192,105 @@ variable "db_param_mariadb_10_1" {
 #         https://pfs.nifcloud.com/api/rdb/AuthorizeDBSecurityGroupIngress.htm
 variable "db_security_001" {
   default = {
-    name = "testmaria"
-    memo = "testmaria"
+    name = "exampledb001"
+    memo = "exampledb001"
+  }
+}
+
+# Create: https://pfs.nifcloud.com/api/rdb/CreateDBInstance.htm
+#         https://pfs.nifcloud.com/api/rdb/CreateDBInstanceReadReplica.htm
+#         https://pfs.nifcloud.com/api/rdb/RestoreDBInstanceFromDBSnapshot.htm
+# Modify: https://pfs.nifcloud.com/api/rdb/ModifyDBInstance.htm
+variable "db_001" {
+  default = {
+    name              = "testdb"   # db name
+    username          = "nifadmin" # db user
+    engine            = "MySQL"    # 値：MySQL | postgres | MariaDB
+    engine_version    = "5.7.15"
+    allocated_storage = 50
+    storage_type      = 0
+    identifier        = "exampledb001" # instance name
+    #replicate_source_db = "exampledb001"
+    #snapshot_identifier = "exampledb-snap001"
+    instance_class          = "db.mini"
+    backup_retention_period = 3                     # 値：0〜10
+    backup_window           = "15:00-16:00"         # UTC
+    maintenance_window      = "sun:17:00-sun:18:00" # UTC
+    multi_az                = true
+    multi_az_type           = 1 # 値：0(データ優先) | 1(性能優先)
+    port                    = 3306
+    publicly_accessible     = false
+    virtual_address         = "192.168.2.250/24"
+    master_address          = "192.168.2.249/24"
+    slave_address           = "192.168.2.248/24"
+
+    replica_identifier = "exampledb-replica001"
+    replica_address    = "192.168.2.247/24"
+
+    #apply_immediately   = true
+    #skip_final_snapshot = false
+    #final_snapshot_identifier = "final_example_snap001"
+  }
+}
+variable "db_002" {
+  default = {
+    #name              = "testdb"   # db name
+    #username          = "nifadmin" # db user
+    #engine            = "MySQL"    # 値：MySQL | postgres | MariaDB
+    #engine_version    = "5.7.15"
+    #allocated_storage = 50
+    #storage_type      = 0
+    identifier          = "exampledb-replica003" # instance name
+    replicate_source_db = "exampledb001"
+    #snapshot_identifier = "exampledb-snap001"
+    instance_class = "db.mini"
+    #backup_retention_period = 3                     # 値：0〜10
+    #backup_window           = "15:00-16:00"         # UTC
+    #maintenance_window      = "sun:17:00-sun:18:00" # UTC
+    #multi_az                = true
+    #multi_az_type           = 1 # 値：0(データ優先) | 1(性能優先)
+    #port                    = 3306
+    #publicly_accessible     = false
+    #virtual_address         = "192.168.2.250/24"
+    #master_address          = "192.168.2.249/24"
+    #slave_address           = "192.168.2.248/24"
+
+    #replica_identifier = "exampledb-replica001"
+    replica_address = "192.168.2.245/24"
+
+    #apply_immediately   = true
+    #skip_final_snapshot = false
+    #final_snapshot_identifier = "final_example_snap001"
+  }
+}
+variable "db_003" {
+  default = {
+    #name              = "testdb"   # db name
+    #username          = "nifadmin" # db user
+    #engine            = "MySQL"    # 値：MySQL | postgres | MariaDB
+    #engine_version    = "5.7.15"
+    #allocated_storage = 50
+    storage_type = 0
+    identifier   = "exampledbfromsnap004" # instance name
+    #replicate_source_db = "exampledb001"
+    snapshot_identifier = "examplesnap001" # "rdb:exampledb001-2019-11-01-03-06"
+    instance_class      = "db.mini"
+    #backup_retention_period = 3                     # 値：0〜10
+    #backup_window           = "15:00-16:00"         # UTC
+    #maintenance_window      = "sun:17:00-sun:18:00" # UTC
+    multi_az = false
+    #multi_az_type           = 1 # 値：0(データ優先) | 1(性能優先)
+    port                = 3306
+    publicly_accessible = true
+    #virtual_address         = "192.168.2.244/24"
+    #master_address          = "192.168.2.243/24"
+    #slave_address           = "192.168.2.242/24"
+
+    #replica_identifier = "exampledb-replica001"
+    #replica_address    = "192.168.2.241/24"
+
+    #apply_immediately   = true
+    #skip_final_snapshot = false
+    #final_snapshot_identifier = "final_example_snap001"
   }
 }

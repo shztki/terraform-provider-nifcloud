@@ -308,12 +308,12 @@ func validateDbParamGroupName(v interface{}, k string) (ws []string, errors []er
 		errors = append(errors, fmt.Errorf("%q must be between 1 and 255 characters in length", k))
 	}
 
-	if !regexp.MustCompile(`^[a-zA-Z]*$`).MatchString(value) {
-		errors = append(errors, fmt.Errorf("%q must be first character is alphabet", k))
+	if !regexp.MustCompile(`^[a-zA-Z]`).MatchString(value) {
+		errors = append(errors, fmt.Errorf("first character of %q must be a letter", k))
 	}
 
-	if regexp.MustCompile(`^*--*$`).MatchString(value) {
-		errors = append(errors, fmt.Errorf("%q - character cannot be consecutive", k))
+	if regexp.MustCompile(`--`).MatchString(value) {
+		errors = append(errors, fmt.Errorf("%q cannot contain two consecutive hyphens", k))
 	}
 
 	if strings.HasSuffix(value, "-") {
