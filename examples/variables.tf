@@ -183,7 +183,7 @@ variable "vpn_connection_002" {
 variable "db_param_001" {
   default = {
     name   = "exampledb001"
-    family = "mysql5.7"
+    family = "mariadb10.1" # mysql5.7
     memo   = "exampledb001"
   }
 }
@@ -205,8 +205,8 @@ variable "db_001" {
   default = {
     name              = "testdb"   # db name
     username          = "nifadmin" # db user
-    engine            = "MySQL"    # 値：MySQL | postgres | MariaDB
-    engine_version    = "5.7.15"
+    engine            = "MariaDB"  # 値：MySQL | postgres | MariaDB
+    engine_version    = "10.1.18"
     allocated_storage = 50
     storage_type      = 0
     identifier        = "exampledb001" # instance name
@@ -217,7 +217,7 @@ variable "db_001" {
     backup_window           = "15:00-16:00"         # UTC
     maintenance_window      = "sun:17:00-sun:18:00" # UTC
     multi_az                = true
-    multi_az_type           = 1 # 値：0(データ優先) | 1(性能優先)
+    multi_az_type           = 0 # 値：0(データ優先) | 1(性能優先)
     port                    = 3306
     publicly_accessible     = false
     virtual_address         = "192.168.2.250/24"
@@ -273,7 +273,7 @@ variable "db_003" {
     storage_type = 0
     identifier   = "exampledbfromsnap004" # instance name
     #replicate_source_db = "exampledb001"
-    snapshot_identifier = "examplesnap001" # "rdb:exampledb001-2019-11-01-03-06"
+    snapshot_identifier = "examplesnap001"
     instance_class      = "db.mini"
     #backup_retention_period = 3                     # 値：0〜10
     #backup_window           = "15:00-16:00"         # UTC

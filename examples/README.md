@@ -1,4 +1,4 @@
-# terraform-provider-nifcloud
+# terraform examples
 nifcloud に各種リソースを作成するためのサンプルコード
 
 ### 環境変数
@@ -7,6 +7,13 @@ AWS_ACCESS_KEY_ID=`ニフクラアカウントのアクセスキー`
 AWS_SECRET_ACCESS_KEY=`ニフクラアカウントのシークレットアクセスキー`
 TF_VAR_def_pass=`WindowsServerのパスワード`
 TF_VAR_ssh_pubkey_path=`SSH公開鍵のファイルパス`
+```
+
+### 実行
+```
+terraform init
+terraform plan
+terraform apply
 ```
 
 ### コメント

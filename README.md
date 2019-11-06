@@ -1,13 +1,10 @@
-# terraform-provider-nifcloud
+# Terraform Provider for NIFCLOUD
 * [nifcloud-sdk-go][1]を使用させていただき、ニフクラ用の terraform provider を作成してみる。
 * [こちら][2]を参考にさせていただく。
-* モジュール管理は [Go Modules][4] に変更。
 
 ## 環境
-```
-go version go1.13.3 linux/amd64
-Terraform v0.12.12
-```
+* [Go][4] 1.13
+* [Terraform][5] 0.12+
 
 ## 作業環境準備
 ```
@@ -56,6 +53,7 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 ##### aws-sdk-go
 1. いくつか修正しないといけない点があったため、ブランチを分けて[自分の環境に作成][3]。
 1. 上記を利用する形とする。修正点は上記コミット履歴を参照。
+1. 基本は `models/apis/` 配下の jsonファイルを修正し、 `go generate ./service` して、タグのバージョンを 1つずつ上げている。そのたび、こちらの `go.mod` のバージョン指定を修正。
 
 ##### examples/tffiles
 1. terraform 0.12 で動作確認中...
@@ -72,17 +70,18 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 | OSイメージ | ok | |
 | 拠点間VPNゲートウェイ | ok | ルートテーブルは作っていません |
 | RDB | ok | イベント通知は作っていません |
-| ロードバランサー | 検討中... | |
-| マルチロードバランサー | 検討中... | |
-| 付替IPアドレス | 検討中... | |
-| 追加NIC | 検討中... | |
-| 基本監視 | 検討中... | |
-| ルーター | 検討中... | |
-| サーバーセパレート | 検討中... | |
-| NAS | 検討中... | |
+| ロードバランサー | n/a | |
+| マルチロードバランサー | n/a | |
+| 付替IPアドレス | n/a | |
+| 追加NIC | n/a | |
+| 基本監視 | n/a | |
+| ルーター | n/a | |
+| サーバーセパレート | n/a | |
+| NAS | n/a | |
 
 
 [1]:https://github.com/alice02/nifcloud-sdk-go
 [2]:https://github.com/kzmake/terraform-provider-nifcloud
 [3]:https://github.com/shztki/nifcloud-sdk-go
-[4]:https://blog.golang.org/using-go-modules
+[4]:https://golang.org/doc/install
+[5]:https://www.terraform.io/downloads.html
