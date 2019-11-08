@@ -52,6 +52,7 @@ func Provider() terraform.ResourceProvider {
 			"nifcloud_db_parameter_group":   resourceNifcloudDbParameterGroup(),
 			"nifcloud_db_security_group":    resourceNifcloudDbSecurityGroup(),
 			"nifcloud_db_instance":          resourceNifcloudDbInstance(),
+			"nifcloud_router":               resourceNifcloudRouter(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

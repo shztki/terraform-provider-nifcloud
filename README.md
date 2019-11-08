@@ -3,8 +3,8 @@
 * [こちら][2]を参考にさせていただく。
 
 ## 環境
-* [Go][4] 1.13
 * [Terraform][5] 0.12+
+* [Go][4] 1.13 (to build the provider plugin)
 
 ## 作業環境準備
 ```
