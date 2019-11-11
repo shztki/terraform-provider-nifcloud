@@ -48,7 +48,7 @@ func resourceNifcloudRouter() *schema.Resource {
 			"network_interfaces": {
 				Type:          schema.TypeSet,
 				Optional:      true,
-				MinItems:      0,
+				MinItems:      1,
 				MaxItems:      7,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
