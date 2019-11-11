@@ -42,6 +42,10 @@ nifcloud-debugcli computing describe-images --query 'ImagesSet[?ImageOwnerId==`n
 		* 冗長化(データ優先)を選択した場合、 slave の IPアドレスも指定が必要です。
 		* 冗長化(性能優先)は MySQL時のみ選択可能ですが、この場合は slave の指定は不可で、 replica の名前と IPアドレス指定が必須です。
 	* サンプルコード上ではいくつか `ignore_changes` を指定していますが、これには変更不可のものもあれば、特に指定しなかったために State の値と差分が生まれてしまったので抑制しているだけのものがあります。「新規作成、スナップショットからの作成、リードレプリカとしての作成」のそれぞれで、変更不可なものは異なるので、ご注意ください。
+* VPN Gateway および Router について、同じプライベートLAN に所属するなど、作成処理が競合する場合はエラーになった。このため、必ずどちらかに `depends_on` を入れること。
+	* AssociateRouteTable系にも `depends_on` は入れておくこと。
+	* VpnConnection にも `depends_on` は入れておくこと。
+	* ネットワーク系の処理が同時実行されないような注意が必要。。。
 
 [1]:https://github.com/nifcloud/nifcloud-sdk-python
 [2]:https://pfs.nifcloud.com/api/rest/AuthorizeSecurityGroupIngress.htm

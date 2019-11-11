@@ -135,6 +135,27 @@ func resourceNifcloudRouterCreate(d *schema.ResourceData, meta interface{}) erro
 	// Create the router.
 	log.Printf("[DEBUG] Creating router")
 	resp, err := conn.NiftyCreateRouter(createOpts)
+//	var resp *computing.NiftyCreateRouterOutput
+//	err := resource.Retry(20*time.Minute, func() *resource.RetryError {
+//		var err error
+//		resp, err = conn.NiftyCreateRouter(createOpts)
+//
+//		// Retry for ...
+//		if isNifcloudErr(err, "Server.ResourceIncorrectState.Network.Processing", "") {
+//			return resource.RetryableError(err)
+//		}
+//
+//		if err != nil {
+//			return resource.NonRetryableError(err)
+//		}
+//
+//		return nil
+//	})
+//
+//	if isResourceTimeoutError(err) {
+//		resp, err = conn.NiftyCreateRouter(createOpts)
+//	}
+
 	if err != nil {
 		return fmt.Errorf("Error creating router: %s", err)
 	}

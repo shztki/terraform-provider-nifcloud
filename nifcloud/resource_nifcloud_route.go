@@ -174,6 +174,9 @@ func resourceNifcloudRouteDelete(d *schema.ResourceData, meta interface{}) error
 		resp, err = conn.DeleteRoute(deleteOpts)
 		log.Printf("[DEBUG] Route delete result: %s", resp)
 
+		if isNifcloudErr(err, "Client.ResourceAssociated.RouteTable", "") {
+			return resource.RetryableError(err)
+		}
 		if err == nil {
 			return nil
 		}

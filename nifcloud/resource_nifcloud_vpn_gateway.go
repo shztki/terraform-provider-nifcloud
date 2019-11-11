@@ -101,6 +101,28 @@ func resourceNifcloudVpnGatewayCreate(d *schema.ResourceData, meta interface{}) 
 	// Create the Vpn Gateway.
 	log.Printf("[DEBUG] Creating vpn gateway")
 	resp, err := conn.CreateVpnGateway(createOpts)
+//	var resp *computing.CreateVpnGatewayOutput
+//	err := resource.Retry(20*time.Minute, func() *resource.RetryError {
+//		var err error
+//		resp, err = conn.CreateVpnGateway(createOpts)
+//
+//		// Retry for ...
+//		//log.Printf("[DEBUG] Creating vpn gateway err: %s", err)
+//		if isNifcloudErr(err, "Server.ResourceIncorrectState.Network.Processing", "") {
+//			return resource.RetryableError(err)
+//		}
+//
+//		if err != nil {
+//			return resource.NonRetryableError(err)
+//		}
+//
+//		return nil
+//	})
+//
+//	if isResourceTimeoutError(err) {
+//		resp, err = conn.CreateVpnGateway(createOpts)
+//	}
+
 	if err != nil {
 		return fmt.Errorf("Error creating vpn gateway: %s", err)
 	}

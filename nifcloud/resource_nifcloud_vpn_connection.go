@@ -185,10 +185,10 @@ func resourceNifcloudVpnConnection() *schema.Resource {
 func resourceNifcloudVpnConnectionCreate(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*NifcloudClient).computingconn
 
-	awsMutexKV.Lock(d.Get("vpn_gateway_id").(string))
-	defer awsMutexKV.Unlock(d.Get("vpn_gateway_id").(string))
-	awsMutexKV.Lock(d.Get("customer_gateway_id").(string))
-	defer awsMutexKV.Unlock(d.Get("customer_gateway_id").(string))
+//	awsMutexKV.Lock(d.Get("vpn_gateway_id").(string))
+//	defer awsMutexKV.Unlock(d.Get("vpn_gateway_id").(string))
+//	awsMutexKV.Lock(d.Get("customer_gateway_id").(string))
+//	defer awsMutexKV.Unlock(d.Get("customer_gateway_id").(string))
 
 	createOpts := &computing.CreateVpnConnectionInput{
 		Agreement:                     nifcloud.Bool(true),
