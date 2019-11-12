@@ -15,6 +15,10 @@ variable "admin_user_name" {
 }
 variable "def_pass" {}
 
+variable "allow_cidr_001" {}
+
+variable "pre_shared_key_001" {}
+
 # Import : https://pfs.nifcloud.com/api/rest/ImportKeyPair.htm
 # Modiry : https://pfs.nifcloud.com/api/rest/NiftyModifyKeyPairAttribute.htm
 variable "ssh_pubkey_path" {}
@@ -73,12 +77,32 @@ variable "firewallgroup_example_kanri1" {
 # Modify : https://pfs.nifcloud.com/api/rest/ModifyInstanceAttribute.htm
 variable "instance_cent" {
   default = {
-    count       = "1"
-    name        = "examplecent"
+    count       = "2"
+    name        = "exampleweb"
     imageid     = "183" # 186:win2019std, # 157:win2016std, # 183:cent7.6, # 168:ubuntu18.04
     server_type = "e-small"
-    memo        = "examplecent"
+    memo        = "exampleweb"
     user_data   = "userdata/cent7"
+  }
+}
+variable "instance_db" {
+  default = {
+    count       = "1"
+    name        = "exampledb"
+    imageid     = "183" # 186:win2019std, # 157:win2016std, # 183:cent7.6, # 168:ubuntu18.04
+    server_type = "e-small"
+    memo        = "exampledb"
+    user_data   = "userdata/cent7"
+  }
+}
+variable "instance_kanri" {
+  default = {
+    count       = "1"
+    name        = "examplekanri"
+    imageid     = "183" # 186:win2019std, # 157:win2016std, # 183:cent7.6, # 168:ubuntu18.04
+    server_type = "e-small"
+    memo        = "examplekanri"
+    user_data   = "userdata/kanri"
   }
 }
 variable "instance_win" {
@@ -96,18 +120,18 @@ variable "instance_win" {
 # Modify : https://pfs.nifcloud.com/api/rest/ModifyVolumeAttribute.htm
 variable "volume_cent" {
   default = {
-    name      = "example001"
+    name      = "centdisk"
     size      = 100
     disk_type = "2"
-    memo      = "example001"
+    memo      = "centdisk"
   }
 }
 variable "volume_win" {
   default = {
-    name      = "example002"
+    name      = "windisk"
     size      = 100
     disk_type = "2"
-    memo      = "example002"
+    memo      = "windisk"
   }
 }
 

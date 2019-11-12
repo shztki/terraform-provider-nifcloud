@@ -270,6 +270,30 @@ resource "nifcloud_securitygroup_rule" "example_firewallgroup_004_rule_005" {
     inout           = "IN"
   }
 }
+resource "nifcloud_securitygroup_rule" "example_firewallgroup_004_rule_006" {
+  name = "${nifcloud_securitygroup.example_firewallgroup_004.name}"
+  rules {
+    #from_port       = 80
+    #to_port         = 80
+    protocol    = "SSH"
+    cidr_blocks = "${var.allow_cidr_001}"
+    #security_groups = "${nifcloud_securitygroup.example_firewallgroup_003.name}"
+    description = "for web1 from office"
+    inout       = "IN"
+  }
+}
+resource "nifcloud_securitygroup_rule" "example_firewallgroup_004_rule_007" {
+  name = "${nifcloud_securitygroup.example_firewallgroup_004.name}"
+  rules {
+    #from_port       = 80
+    #to_port         = 80
+    protocol    = "RDP"
+    cidr_blocks = "${var.allow_cidr_001}"
+    #security_groups = "${nifcloud_securitygroup.example_firewallgroup_003.name}"
+    description = "for web1 from office"
+    inout       = "IN"
+  }
+}
 
 resource "nifcloud_securitygroup" "example_firewallgroup_005" {
   name        = "${lookup(var.firewallgroup_example_db1, "name")}"
@@ -374,5 +398,17 @@ resource "nifcloud_securitygroup_rule" "example_firewallgroup_006_rule_005" {
     security_groups = "${nifcloud_securitygroup.example_firewallgroup_003.name}"
     description     = "for kanri1 from vpn1"
     inout           = "IN"
+  }
+}
+resource "nifcloud_securitygroup_rule" "example_firewallgroup_006_rule_006" {
+  name = "${nifcloud_securitygroup.example_firewallgroup_006.name}"
+  rules {
+    #from_port       = 80
+    #to_port         = 80
+    protocol    = "SSH"
+    cidr_blocks = "${var.allow_cidr_001}"
+    #security_groups = "${nifcloud_securitygroup.example_firewallgroup_003.name}"
+    description = "for kanri1 from office"
+    inout       = "IN"
   }
 }

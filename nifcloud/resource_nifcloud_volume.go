@@ -254,7 +254,9 @@ func resourceNifcloudVolumeDelete(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	if _, err := conn.DetachVolume(&detach); err != nil {
-		return fmt.Errorf("Error DetachVolumeInput: %s", err)
+		if !isNifcloudErr(err, "Client.Inoperable.Volume.DetachedFromInstance",""){
+			return fmt.Errorf("Error DetachVolumeInput: %s", err)
+		}
 	}
 
 	input := &computing.DeleteVolumeInput{

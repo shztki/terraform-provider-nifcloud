@@ -9,6 +9,8 @@ BOOTPROTO=static
 GATEWAY=192.168.3.1
 NETMASK=255.255.255.0
 IPADDR=192.168.3.101" > /etc/sysconfig/network-scripts/ifcfg-ens160
+echo "192.168.2.0/24 via 192.168.3.250
+192.168.201.0/24 via 192.168.3.250" > /etc/sysconfig/network-scripts/route-ens160
 ifdown ens160; ifup ens160
 
 ## nifcloud ではディスクがあとからアタッチされるので、以下のような処理はuserdata不可

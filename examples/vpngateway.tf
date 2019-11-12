@@ -38,7 +38,7 @@ resource "nifcloud_vpn_connection" "example_vpn_connection_001" {
     encryption_algorithm = "AES256" # AES128 | AES256 | 3DES
     hash_algorithm       = "SHA256" # SHA1 | MD5 | SHA256 | SHA384 | SHA512
     ike_version          = "IKEv2"  # IKEv1 | IKEv2
-    pre_shared_key       = "test1023"
+    pre_shared_key       = "${var.pre_shared_key_001}"
   }
   depends_on = ["nifcloud_vpn_gateway.example_vpn_gateway_001", "nifcloud_customer_gateway.example_customer_gateway_001"]
   lifecycle {

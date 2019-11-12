@@ -17,8 +17,8 @@ resource "nifcloud_router" "example_router_001" {
     #dhcp_options_id = ""
     #dhcp_config_id  = ""
   }
-  security_groups = ["${nifcloud_securitygroup.example_firewallgroup_003.name}"]
-  description     = "${lookup(var.router_001, "memo")}"
+  #security_groups = ["${nifcloud_securitygroup.example_firewallgroup_003.name}"]
+  description = "${lookup(var.router_001, "memo")}"
 }
 
 resource "nifcloud_route_table" "example_route_table_001" {}
