@@ -31,6 +31,27 @@ $ mkdir -p ~/.terraform.d/plugins/
 $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 ```
 
+## 作成状況
+| リソース | ステータス | 備考 |
+|---|---|---|
+| SSHキーインポート | ok | Createは作っていません |
+| プライベートLAN | ok | |
+| サーバー | ok | インポートやコピーは作っていません |
+| ディスク | ok | |
+| ファイアウォール | ok | ログ取得件数変更処理は作っていません |
+| バックアップ | ok | |
+| OSイメージ | ok | |
+| 拠点間VPNゲートウェイ | ok | |
+| RDB | ok | イベント通知は作っていません |
+| ルーター | ok | dhcp関連とNAT関連とWebプロキシは作っていません|
+| ロードバランサー | n/a | |
+| 付替IPアドレス | n/a | |
+| マルチロードバランサー | n/a | |
+| 追加NIC | n/a | |
+| 基本監視 | n/a | |
+| サーバーセパレート | n/a | |
+| NAS | n/a | |
+
 ## 作成コメント
 ##### nifcloud/resources
 1. ニフクラには「月額/従量」の課金タイプがある。設定する際は `AccountingType` にパラメータを渡すだけだが、変更は翌月からとなる関係で、最新の状態は `NextMonthAccountingType` となる。このため `accounting_type` として tfstate に残す値は `NextMonthAccountingType` にした方がよい。
@@ -59,26 +80,6 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 ##### examples/tffiles
 1. terraform 0.12 で動作確認中...
 
-## 作成状況
-| リソース | ステータス | 備考 |
-|---|---|---|
-| SSHキーインポート | ok | Createは作っていません |
-| プライベートLAN | ok | |
-| サーバー | ok | インポートやコピーは作っていません |
-| ディスク | ok | |
-| ファイアウォール | ok | ログ取得件数変更処理は作っていません |
-| バックアップ | ok | |
-| OSイメージ | ok | |
-| 拠点間VPNゲートウェイ | ok | |
-| RDB | ok | イベント通知は作っていません |
-| ルーター | ok | dhcp関連とNAT関連とWebプロキシは作っていません|
-| ロードバランサー | n/a | |
-| 付替IPアドレス | n/a | |
-| マルチロードバランサー | n/a | |
-| 追加NIC | n/a | |
-| 基本監視 | n/a | |
-| サーバーセパレート | n/a | |
-| NAS | n/a | |
 
 
 [1]:https://github.com/alice02/nifcloud-sdk-go

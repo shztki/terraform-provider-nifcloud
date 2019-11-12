@@ -1,4 +1,4 @@
-# terraform examples
+# Terraform Provider for NIFCLOUD examples
 nifcloud に各種リソースを作成するためのサンプルコード
 
 ### 環境変数
@@ -17,6 +17,15 @@ terraform init
 terraform plan
 terraform apply
 ```
+
+### サンプルイメージ
+こんな構成ができあがります。
+
+![examples_001](https://raw.githubusercontent.com/shztki/terraform-provider-nifcloud/images/nifcloud_examples_001.png)
+
+* イメージとしては、このあと手動でリモートアクセスVPNGW を `192.168.2.245` で作成し、その際の配布NW が `10.168.201.0/24` になるイメージで `example_server_kanri` にルーティングを設定しています。
+* `.disable` にしたりコメントアウトしたりしていますが、RDB やバックアップ、カスタマイズイメージの作成も可能です。
+
 
 ### コメント
 * イメージID(スタンダード)については、 [CLI][1] を入れて以下コマンド実行するなどして特定する。
@@ -47,7 +56,7 @@ nifcloud-debugcli computing describe-images --query 'ImagesSet[?ImageOwnerId==`n
 * VPN Gateway および Router について、同じプライベートLAN に所属するなど、作成処理が競合する場合はエラーになった。このため、必ずどちらかに `depends_on` を入れること。
 	* AssociateRouteTable系にも `depends_on` は入れておくこと。
 	* VpnConnection にも `depends_on` は入れておくこと。
-	* ネットワーク系の処理が同時実行されないような注意が必要。。。
+	* ネットワーク系の処理が同時実行されないような注意が必要です。
 
 [1]:https://github.com/nifcloud/nifcloud-sdk-python
 [2]:https://pfs.nifcloud.com/api/rest/AuthorizeSecurityGroupIngress.htm
