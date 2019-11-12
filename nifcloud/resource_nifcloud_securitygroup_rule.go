@@ -182,7 +182,23 @@ func resourceNifcloudSecurityGroupRuleDelete(d *schema.ResourceData, meta interf
 		IpPermissions: perm,
 	}
 
-	if _, err := conn.RevokeSecurityGroupIngress(&req); err != nil {
+	err = resource.Retry(5*time.Minute, func() *resource.RetryError {
+		_, err := conn.RevokeSecurityGroupIngress(&req)
+		if err != nil {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.SecurityGroupIngress" {
+				return nil
+			}
+			return resource.RetryableError(err)
+		}
+		return nil
+	})
+	if isResourceTimeoutError(err) {
+		_, err = conn.RevokeSecurityGroupIngress(&req)
+		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.SecurityGroupIngress" {
+			return nil
+		}
+	}
+	if err != nil {
 		return fmt.Errorf(
 			"Error deleting rule for Security Group (%s): %s",
 			*sg.GroupName, err)

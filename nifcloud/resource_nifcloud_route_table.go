@@ -79,78 +79,78 @@ func resourceNifcloudRouteTableDelete(d *schema.ResourceData, meta interface{}) 
 
 	// First request the routing table since we'll have to disassociate
 	// all the subnets first.
-	rtRaw, _, err := resourceNifcloudRouteTableStateRefreshFunc(conn, d.Id())()
-	if err != nil {
-		return err
-	}
-	if rtRaw == nil {
-		return nil
-	}
-	rt := rtRaw.(*computing.RouteTableSetItem)
-
-	// Do all the disassociations
-	for _, a := range rt.AssociationSet {
-		log.Printf("[INFO] Disassociating association with router: %s", *a.RouteTableAssociationId)
-		_, err := conn.DisassociateRouteTable(&computing.DisassociateRouteTableInput{
-			AssociationId: a.RouteTableAssociationId,
-			Agreement:     nifcloud.Bool(false),
-		})
-		log.Printf("[INFO] Disassociating association with router: %v", err)
-//		if err != nil {
-//			// First check if the association ID is not found. If this
-//			// is the case, then it was already disassociated somehow,
-//			// and that is okay.
-//			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.AssociationId" {
-//				err = nil
-//			}
-//		}
-//		if err != nil {
-//			return err
-//		}
-	}
-
-	for _, a := range rt.PropagatingVgwSet {
-		log.Printf("[INFO] Disassociating association with vpn gateway: %s", *a.RouteTableAssociationId)
-		_, err := conn.NiftyDisassociateRouteTableFromVpnGateway(&computing.NiftyDisassociateRouteTableFromVpnGatewayInput{
-			AssociationId: a.RouteTableAssociationId,
-			Agreement:     nifcloud.Bool(false),
-		})
-		log.Printf("[INFO] Disassociating association with vpn gateway: %v", err)
-//		if err != nil {
-//			// First check if the association ID is not found. If this
-//			// is the case, then it was already disassociated somehow,
-//			// and that is okay.
-//			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.AssociationId" {
-//				err = nil
-//			}
-//		}
-//		if err != nil {
-//			return err
-//		}
-	}
-
-	for _, a := range rt.ElasticLoadBalancerAssociationSet {
-		log.Printf("[INFO] Disassociating association with multi load balancer: %s", *a.RouteTableAssociationId)
-		_, err := conn.NiftyDisassociateRouteTableFromElasticLoadBalancer(&computing.NiftyDisassociateRouteTableFromElasticLoadBalancerInput{
-			AssociationId: a.RouteTableAssociationId,
-		})
-		log.Printf("[INFO] Disassociating association with multi load balancer: %v", err)
-//		if err != nil {
-//			// First check if the association ID is not found. If this
-//			// is the case, then it was already disassociated somehow,
-//			// and that is okay.
-//			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.AssociationId" {
-//				err = nil
-//			}
-//		}
-//		if err != nil {
-//			return err
-//		}
-	}
+//	rtRaw, _, err := resourceNifcloudRouteTableStateRefreshFunc(conn, d.Id())()
+//	if err != nil {
+//		return err
+//	}
+//	if rtRaw == nil {
+//		return nil
+//	}
+//	rt := rtRaw.(*computing.RouteTableSetItem)
+//
+//	// Do all the disassociations
+//	for _, a := range rt.AssociationSet {
+//		log.Printf("[INFO] Disassociating association with router: %s", *a.RouteTableAssociationId)
+//		_, err := conn.DisassociateRouteTable(&computing.DisassociateRouteTableInput{
+//			AssociationId: a.RouteTableAssociationId,
+//			Agreement:     nifcloud.Bool(false),
+//		})
+//		log.Printf("[INFO] Disassociating association with router: %v", err)
+////		if err != nil {
+////			// First check if the association ID is not found. If this
+////			// is the case, then it was already disassociated somehow,
+////			// and that is okay.
+////			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.AssociationId" {
+////				err = nil
+////			}
+////		}
+////		if err != nil {
+////			return err
+////		}
+//	}
+//
+//	for _, a := range rt.PropagatingVgwSet {
+//		log.Printf("[INFO] Disassociating association with vpn gateway: %s", *a.RouteTableAssociationId)
+//		_, err := conn.NiftyDisassociateRouteTableFromVpnGateway(&computing.NiftyDisassociateRouteTableFromVpnGatewayInput{
+//			AssociationId: a.RouteTableAssociationId,
+//			Agreement:     nifcloud.Bool(false),
+//		})
+//		log.Printf("[INFO] Disassociating association with vpn gateway: %v", err)
+////		if err != nil {
+////			// First check if the association ID is not found. If this
+////			// is the case, then it was already disassociated somehow,
+////			// and that is okay.
+////			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.AssociationId" {
+////				err = nil
+////			}
+////		}
+////		if err != nil {
+////			return err
+////		}
+//	}
+//
+//	for _, a := range rt.ElasticLoadBalancerAssociationSet {
+//		log.Printf("[INFO] Disassociating association with multi load balancer: %s", *a.RouteTableAssociationId)
+//		_, err := conn.NiftyDisassociateRouteTableFromElasticLoadBalancer(&computing.NiftyDisassociateRouteTableFromElasticLoadBalancerInput{
+//			AssociationId: a.RouteTableAssociationId,
+//		})
+//		log.Printf("[INFO] Disassociating association with multi load balancer: %v", err)
+////		if err != nil {
+////			// First check if the association ID is not found. If this
+////			// is the case, then it was already disassociated somehow,
+////			// and that is okay.
+////			if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.AssociationId" {
+////				err = nil
+////			}
+////		}
+////		if err != nil {
+////			return err
+////		}
+//	}
 
 	// Delete the route table
 	log.Printf("[INFO] Deleting Route Table: %s", d.Id())
-	_, err = conn.DeleteRouteTable(&computing.DeleteRouteTableInput{
+	_, err := conn.DeleteRouteTable(&computing.DeleteRouteTableInput{
 		RouteTableId: nifcloud.String(d.Id()),
 	})
 	if err != nil {

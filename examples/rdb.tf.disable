@@ -47,11 +47,11 @@ resource "nifcloud_db_security_group" "example_db_security_group_001" {
 
   ingress {
     cidr = "192.168.2.0/24"
-    #security_group_name= "${nifcloud_securitygroup.example_firewallgroup_001.name}"
+    #security_group_name= "${nifcloud_securitygroup.example_firewallgroup_005.name}"
   }
   ingress {
     #cidr  = "192.168.2.0/24"
-    security_group_name = "${nifcloud_securitygroup.example_firewallgroup_001.name}"
+    security_group_name = "${nifcloud_securitygroup.example_firewallgroup_005.name}"
   }
 }
 
@@ -83,7 +83,7 @@ resource "nifcloud_db_instance" "example_db_001" {
   multi_az      = "${lookup(var.db_001, "multi_az")}"
   multi_az_type = "${lookup(var.db_001, "multi_az_type")}"
 
-  network_id      = "${nifcloud_network.example_privatelan_001.id}"
+  network_id      = "${nifcloud_network.example_privatelan_002.id}"
   virtual_address = "${lookup(var.db_001, "virtual_address")}"
   master_address  = "${lookup(var.db_001, "master_address")}"
   slave_address   = "${lookup(var.db_001, "slave_address")}"
@@ -123,7 +123,7 @@ resource "nifcloud_db_instance" "example_db_002" {
   #multi_az      = "${lookup(var.db_002, "multi_az")}"
   #multi_az_type = "${lookup(var.db_002, "multi_az_type")}"
 
-  #network_id      = "${nifcloud_network.example_privatelan_001.id}"
+  #network_id      = "${nifcloud_network.example_privatelan_002.id}"
   #virtual_address = "${lookup(var.db_002, "virtual_address")}"
   #master_address  = "${lookup(var.db_002, "master_address")}"
   #slave_address = "${lookup(var.db_002, "slave_address")}"
@@ -134,7 +134,7 @@ resource "nifcloud_db_instance" "example_db_002" {
   #skip_final_snapshot = "${lookup(var.db_002, "skip_final_snapshot")}"
   #final_snapshot_identifier = "${lookup(var.db_002, "final_snapshot_identifier")}"
   lifecycle {
-    ignore_changes = [availability_zone, engine, engine_version, name, network_id, security_group_names, username]
+    ignore_changes = ["availability_zone", "engine", "engine_version", "name", "network_id", "security_group_names", "username"]
   }
 }
 
@@ -166,7 +166,7 @@ resource "nifcloud_db_instance" "example_db_002" {
 #  multi_az = "${lookup(var.db_003, "multi_az")}"
 #  #multi_az_type = "${lookup(var.db_003, "multi_az_type")}"
 #
-#  #network_id      = "${nifcloud_network.example_privatelan_001.id}"
+#  #network_id      = "${nifcloud_network.example_privatelan_002.id}"
 #  #virtual_address = "${lookup(var.db_003, "virtual_address")}"
 #  #master_address  = "${lookup(var.db_003, "master_address")}"
 #  #slave_address = "${lookup(var.db_003, "slave_address")}"
@@ -177,7 +177,7 @@ resource "nifcloud_db_instance" "example_db_002" {
 #  #skip_final_snapshot = "${lookup(var.db_003, "skip_final_snapshot")}"
 #  #final_snapshot_identifier = "${lookup(var.db_003, "final_snapshot_identifier")}"
 #  lifecycle {
-#    ignore_changes = [engine, engine_version, name, username]
+#    ignore_changes = ["engine", "engine_version", "name", "username"]
 #  }
 #}
 

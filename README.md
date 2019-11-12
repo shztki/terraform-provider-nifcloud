@@ -69,7 +69,7 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 | ファイアウォール | ok | ログ取得件数変更処理は作っていません |
 | バックアップ | ok | |
 | OSイメージ | ok | |
-| 拠点間VPNゲートウェイ | ok | ルートテーブルは作っていません |
+| 拠点間VPNゲートウェイ | ok | |
 | RDB | ok | イベント通知は作っていません |
 | ルーター | ok | dhcp関連とNAT関連とWebプロキシは作っていません|
 | ロードバランサー | n/a | |

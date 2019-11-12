@@ -27,32 +27,45 @@ variable "sshkey_example" {
 
 # Create : https://pfs.nifcloud.com/api/rest/NiftyCreatePrivateLan.htm
 # Modify : https://pfs.nifcloud.com/api/rest/NiftyModifyPrivateLanAttribute.htm
-variable "privatelan_example" {
+variable "privatelan_example1" {
   default = {
     name = "example001"
     cidr = "192.168.2.0/24"
     memo = "example001"
   }
 }
+variable "privatelan_example2" {
+  default = {
+    name = "example002"
+    cidr = "192.168.3.0/24"
+    memo = "example002"
+  }
+}
 
 # Create: https://pfs.nifcloud.com/api/rest/CreateSecurityGroup.htm
 # Modify: https://pfs.nifcloud.com/api/rest/UpdateSecurityGroup.htm
-variable "firewallgroup_example_web" {
+variable "firewallgroup_example_web1" {
   default = {
-    name = "exampleweb"
-    memo = "testweb"
+    name = "exampleweb1"
+    memo = "testweb1"
   }
 }
-variable "firewallgroup_example_db" {
+variable "firewallgroup_example_db1" {
   default = {
-    name = "exampledb"
-    memo = "testdb"
+    name = "exampledb1"
+    memo = "testdb1"
   }
 }
-variable "firewallgroup_example_vpn" {
+variable "firewallgroup_example_vpn1" {
   default = {
-    name = "examplevpn"
-    memo = "testvpn"
+    name = "examplevpn1"
+    memo = "testvpn1"
+  }
+}
+variable "firewallgroup_example_kanri1" {
+  default = {
+    name = "examplekanri1"
+    memo = "testkanri1"
   }
 }
 
@@ -128,53 +141,6 @@ variable "image_001" {
     left     = true
     instance = "testCent6"
     memo     = "testCent6 OS Image"
-  }
-}
-
-# Create: https://pfs.nifcloud.com/api/rest/CreateCustomerGateway.htm
-# Modify: https://pfs.nifcloud.com/api/rest/NiftyModifyCustomerGatewayAttribute.htm
-variable "customer_gateway_001" { # IPSec or IPSec VTI
-  default = {
-    name                = "examplecg1"
-    ip_address          = "1.1.1.1"
-    lan_side_ip_address = ""
-    lan_side_cidr_block = "192.168.201.0/24"
-    memo                = "example customer gateway 001"
-  }
-}
-variable "customer_gateway_002" { # L2TPv3/IPSec
-  default = {
-    name                = "examplecg2"
-    ip_address          = "1.1.1.2"
-    lan_side_ip_address = ""
-    lan_side_cidr_block = ""
-    memo                = "l2tpv3 customer gateway 002"
-  }
-}
-
-# Create: https://pfs.nifcloud.com/api/rest/CreateVpnGateway.htm
-# Modify: https://pfs.nifcloud.com/api/rest/NiftyModifyVpnGatewayAttribute.htm
-#         https://pfs.nifcloud.com/api/rest/NiftyUpdateVpnGatewayNetworkInterfaces.htm
-variable "vpn_gateway_001" {
-  default = {
-    name               = "examplevg1"
-    private_ip_address = "192.168.2.254"
-    vpn_gateway_type   = "small"
-    memo               = "example vpn gateway 001"
-  }
-}
-
-# Create: https://pfs.nifcloud.com/api/rest/CreateVpnConnection.htm
-variable "vpn_connection_001" {
-  default = {
-    type = "IPsec" # IPsec or IPsec VTI 
-    memo = "example vpn connection 001"
-  }
-}
-variable "vpn_connection_002" {
-  default = {
-    type = "L2TPv3 / IPsec"
-    memo = "example vpn connection 002"
   }
 }
 
@@ -294,3 +260,64 @@ variable "db_003" {
     #final_snapshot_identifier = "final_example_snap001"
   }
 }
+
+# Create: https://pfs.nifcloud.com/api/rest/CreateCustomerGateway.htm
+# Modify: https://pfs.nifcloud.com/api/rest/NiftyModifyCustomerGatewayAttribute.htm
+variable "customer_gateway_001" { # IPSec or IPSec VTI
+  default = {
+    name                = "examplecg1"
+    ip_address          = "1.1.1.1"
+    lan_side_ip_address = ""
+    lan_side_cidr_block = "192.168.201.0/24"
+    memo                = "example customer gateway 001"
+  }
+}
+variable "customer_gateway_002" { # L2TPv3/IPSec
+  default = {
+    name                = "examplecg2"
+    ip_address          = "1.1.1.2"
+    lan_side_ip_address = ""
+    lan_side_cidr_block = ""
+    memo                = "l2tpv3 customer gateway 002"
+  }
+}
+
+# Create: https://pfs.nifcloud.com/api/rest/CreateVpnGateway.htm
+# Modify: https://pfs.nifcloud.com/api/rest/NiftyModifyVpnGatewayAttribute.htm
+#         https://pfs.nifcloud.com/api/rest/NiftyUpdateVpnGatewayNetworkInterfaces.htm
+variable "vpn_gateway_001" {
+  default = {
+    name               = "examplevg1"
+    private_ip_address = "192.168.2.254"
+    vpn_gateway_type   = "small"
+    memo               = "example vpn gateway 001"
+  }
+}
+
+# Create: https://pfs.nifcloud.com/api/rest/CreateVpnConnection.htm
+variable "vpn_connection_001" {
+  default = {
+    type = "IPsec" # IPsec or IPsec VTI 
+    memo = "example vpn connection 001"
+  }
+}
+variable "vpn_connection_002" {
+  default = {
+    type = "L2TPv3 / IPsec"
+    memo = "example vpn connection 002"
+  }
+}
+
+# Create: https://pfs.nifcloud.com/api/rest/NiftyCreateRouter.htm
+# Modify: https://pfs.nifcloud.com/api/rest/NiftyModifyRouterAttribute.htm
+#         https://pfs.nifcloud.com/api/rest/NiftyUpdateRouterNetworkInterfaces.htm
+variable "router_001" {
+  default = {
+    name        = "examplerouter1"
+    router_type = "small"
+    memo        = "example router 001"
+    ipaddress1  = "192.168.2.250"
+    ipaddress2  = "192.168.3.250"
+  }
+}
+

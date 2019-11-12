@@ -521,7 +521,7 @@ func resourceNifcloudRouterDelete(d *schema.ResourceData, meta interface{}) erro
 
 		err = checkRouterDeleteResponse(resp, d.Id())
 		if err != nil {
-			return resource.NonRetryableError(err)
+			return resource.RetryableError(err)
 		}
 		return nil
 	})
