@@ -60,6 +60,13 @@ func resourceNifcloudSecurityGroup() *schema.Resource {
 //				ValidateFunc: validation.StringLenBetween(0, 40),
 			},
 
+			"group_log_limit_update": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				Default:      1000,
+				ValidateFunc: validation.IntInSlice([]int{1000,100000}),
+			},
+
 			"rules": {
 				Type:       schema.TypeSet,
 				Optional:   true,
@@ -155,6 +162,16 @@ func resourceNifcloudSecurityGroupCreate(d *schema.ResourceData, meta interface{
 		}
 	}
 
+	if v, ok := d.GetOk("group_log_limit_update"); ok {
+		_, err = conn.UpdateSecurityGroup(&computing.UpdateSecurityGroupInput{
+			GroupName          : nifcloud.String(d.Get("name").(string)),
+			GroupLogLimitUpdate: nifcloud.Int64(int64(v.(int))),
+		})
+		if err != nil {
+			return fmt.Errorf("Error GroupLogLimitUpdate: %s", err)
+		}
+	}
+
 	return resourceNifcloudSecurityGroupRead(d, meta)
 }
 
@@ -195,6 +212,16 @@ func resourceNifcloudSecurityGroupUpdate(d *schema.ResourceData, meta interface{
 		_, err := conn.UpdateSecurityGroup(&computing.UpdateSecurityGroupInput{
 			GroupName:              nifcloud.String(d.Get("name").(string)),
 			GroupDescriptionUpdate: nifcloud.String(d.Get("description").(string)),
+		})
+		if err != nil {
+			return fmt.Errorf("Error UpdateSecurityGroup: %s", err)
+		}
+	}
+
+	if d.HasChange("group_log_limit_update") {
+		_, err := conn.UpdateSecurityGroup(&computing.UpdateSecurityGroupInput{
+			GroupName          : nifcloud.String(d.Get("name").(string)),
+			GroupLogLimitUpdate: nifcloud.Int64(int64(d.Get("group_log_limit_update").(int))),
 		})
 		if err != nil {
 			return fmt.Errorf("Error UpdateSecurityGroup: %s", err)

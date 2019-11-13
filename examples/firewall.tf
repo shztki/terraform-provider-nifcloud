@@ -190,8 +190,9 @@
 #}
 
 resource "nifcloud_securitygroup" "example_firewallgroup_003" {
-  name        = "${lookup(var.firewallgroup_example_vpn1, "name")}"
-  description = "${lookup(var.firewallgroup_example_vpn1, "memo")}"
+  name                   = "${lookup(var.firewallgroup_example_vpn1, "name")}"
+  description            = "${lookup(var.firewallgroup_example_vpn1, "memo")}"
+  group_log_limit_update = "${lookup(var.firewallgroup_example_vpn1, "log_limit")}"
 }
 resource "nifcloud_securitygroup_rule" "example_firewallgroup_003_rule_001" {
   name = "${nifcloud_securitygroup.example_firewallgroup_003.name}"
@@ -207,8 +208,9 @@ resource "nifcloud_securitygroup_rule" "example_firewallgroup_003_rule_001" {
 }
 
 resource "nifcloud_securitygroup" "example_firewallgroup_004" {
-  name        = "${lookup(var.firewallgroup_example_web1, "name")}"
-  description = "${lookup(var.firewallgroup_example_web1, "memo")}"
+  name                   = "${lookup(var.firewallgroup_example_web1, "name")}"
+  description            = "${lookup(var.firewallgroup_example_web1, "memo")}"
+  group_log_limit_update = "${lookup(var.firewallgroup_example_web1, "log_limit")}"
 }
 resource "nifcloud_securitygroup_rule" "example_firewallgroup_004_rule_001" {
   name = "${nifcloud_securitygroup.example_firewallgroup_004.name}"
@@ -296,8 +298,9 @@ resource "nifcloud_securitygroup_rule" "example_firewallgroup_004_rule_007" {
 }
 
 resource "nifcloud_securitygroup" "example_firewallgroup_005" {
-  name        = "${lookup(var.firewallgroup_example_db1, "name")}"
-  description = "${lookup(var.firewallgroup_example_db1, "memo")}"
+  name                   = "${lookup(var.firewallgroup_example_db1, "name")}"
+  description            = "${lookup(var.firewallgroup_example_db1, "memo")}"
+  group_log_limit_update = "${lookup(var.firewallgroup_example_db1, "log_limit")}"
 }
 resource "nifcloud_securitygroup_rule" "example_firewallgroup_005_rule_001" {
   name = "${nifcloud_securitygroup.example_firewallgroup_005.name}"
@@ -337,8 +340,9 @@ resource "nifcloud_securitygroup_rule" "example_firewallgroup_005_rule_003" {
 }
 
 resource "nifcloud_securitygroup" "example_firewallgroup_006" {
-  name        = "${lookup(var.firewallgroup_example_kanri1, "name")}"
-  description = "${lookup(var.firewallgroup_example_kanri1, "memo")}"
+  name                   = "${lookup(var.firewallgroup_example_kanri1, "name")}"
+  description            = "${lookup(var.firewallgroup_example_kanri1, "memo")}"
+  group_log_limit_update = "${lookup(var.firewallgroup_example_kanri1, "log_limit")}"
 }
 resource "nifcloud_securitygroup_rule" "example_firewallgroup_006_rule_001" {
   name = "${nifcloud_securitygroup.example_firewallgroup_006.name}"
@@ -409,6 +413,18 @@ resource "nifcloud_securitygroup_rule" "example_firewallgroup_006_rule_006" {
     cidr_blocks = "${var.allow_cidr_001}"
     #security_groups = "${nifcloud_securitygroup.example_firewallgroup_003.name}"
     description = "for kanri1 from office"
+    inout       = "IN"
+  }
+}
+resource "nifcloud_securitygroup_rule" "example_firewallgroup_006_rule_007" {
+  name = "${nifcloud_securitygroup.example_firewallgroup_006.name}"
+  rules {
+    #from_port       = 80
+    #to_port         = 80
+    protocol    = "ANY"
+    cidr_blocks = "${var.remote_vpn_cidr}"
+    #security_groups = "${nifcloud_securitygroup.example_firewallgroup_003.name}"
+    description = "for kanri1 from remote access vpn"
     inout       = "IN"
   }
 }

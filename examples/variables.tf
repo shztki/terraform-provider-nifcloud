@@ -17,6 +17,10 @@ variable "def_pass" {}
 
 variable "allow_cidr_001" {}
 
+variable "remote_vpn_cidr" {
+  default = "10.168.201.0/24"
+}
+
 variable "pre_shared_key_001" {}
 
 # Import : https://pfs.nifcloud.com/api/rest/ImportKeyPair.htm
@@ -50,26 +54,30 @@ variable "privatelan_example2" {
 # Modify: https://pfs.nifcloud.com/api/rest/UpdateSecurityGroup.htm
 variable "firewallgroup_example_web1" {
   default = {
-    name = "exampleweb1"
-    memo = "testweb1"
+    name      = "exampleweb1"
+    memo      = "testweb1"
+    log_limit = 1000 # 1000,100000
   }
 }
 variable "firewallgroup_example_db1" {
   default = {
-    name = "exampledb1"
-    memo = "testdb1"
+    name      = "exampledb1"
+    memo      = "testdb1"
+    log_limit = 1000 # 1000,100000
   }
 }
 variable "firewallgroup_example_vpn1" {
   default = {
-    name = "examplevpn1"
-    memo = "testvpn1"
+    name      = "examplevpn1"
+    memo      = "testvpn1"
+    log_limit = 1000 # 1000,100000
   }
 }
 variable "firewallgroup_example_kanri1" {
   default = {
-    name = "examplekanri1"
-    memo = "testkanri1"
+    name      = "examplekanri1"
+    memo      = "testkanri1"
+    log_limit = 1000 # 1000,100000
   }
 }
 
@@ -210,12 +218,12 @@ variable "db_001" {
     multi_az_type           = 0 # 値：0(データ優先) | 1(性能優先)
     port                    = 3306
     publicly_accessible     = false
-    virtual_address         = "192.168.2.250/24"
-    master_address          = "192.168.2.249/24"
-    slave_address           = "192.168.2.248/24"
+    virtual_address         = "192.168.2.200/24"
+    master_address          = "192.168.2.199/24"
+    slave_address           = "192.168.2.198/24"
 
     replica_identifier = "exampledb-replica001"
-    replica_address    = "192.168.2.247/24"
+    replica_address    = "192.168.2.197/24"
 
     #apply_immediately   = true
     #skip_final_snapshot = false
@@ -241,12 +249,12 @@ variable "db_002" {
     #multi_az_type           = 1 # 値：0(データ優先) | 1(性能優先)
     #port                    = 3306
     #publicly_accessible     = false
-    #virtual_address         = "192.168.2.250/24"
-    #master_address          = "192.168.2.249/24"
-    #slave_address           = "192.168.2.248/24"
+    #virtual_address         = "192.168.2.200/24"
+    #master_address          = "192.168.2.199/24"
+    #slave_address           = "192.168.2.198/24"
 
     #replica_identifier = "exampledb-replica001"
-    replica_address = "192.168.2.245/24"
+    replica_address = "192.168.2.196/24"
 
     #apply_immediately   = true
     #skip_final_snapshot = false
@@ -272,12 +280,12 @@ variable "db_003" {
     #multi_az_type           = 1 # 値：0(データ優先) | 1(性能優先)
     port                = 3306
     publicly_accessible = true
-    #virtual_address         = "192.168.2.244/24"
-    #master_address          = "192.168.2.243/24"
-    #slave_address           = "192.168.2.242/24"
+    #virtual_address         = "192.168.2.200/24"
+    #master_address          = "192.168.2.199/24"
+    #slave_address           = "192.168.2.198/24"
 
     #replica_identifier = "exampledb-replica001"
-    #replica_address    = "192.168.2.241/24"
+    #replica_address    = "192.168.2.197/24"
 
     #apply_immediately   = true
     #skip_final_snapshot = false
