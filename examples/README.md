@@ -5,9 +5,9 @@ nifcloud に各種リソースを作成するためのサンプルコード
 ```
 AWS_ACCESS_KEY_ID=`ニフクラアカウントのアクセスキー`
 AWS_SECRET_ACCESS_KEY=`ニフクラアカウントのシークレットアクセスキー`
-TF_VAR_def_pass=`WindowsServerのパスワード`
+TF_VAR_def_pass=`WindowsServerやRDBのパスワード`
 TF_VAR_ssh_pubkey_path=`SSH公開鍵のファイルパス`
-TF_VAR_allow_cidr_001=`FWで許可したい許可したいアドレス`
+TF_VAR_allow_cidr_001=`FWで許可したいアドレス`
 TF_VAR_pre_shared_key_001=`IPSecの事前共有鍵`
 ```
 
