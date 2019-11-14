@@ -61,7 +61,7 @@ resource "nifcloud_instance" "example_server_kanri" {
 #    network_id = "net-COMMON_GLOBAL" # net-COMMON_GLOBAL | net-COMMON_PRIVATE
 #  }
 #  network_interfaces {
-#    //network_id = "net-COMMON_PRIVATE"
+#    #network_id = "net-COMMON_PRIVATE"
 #    network_name = "${lookup(var.privatelan_example2, "name")}"
 #    ipaddress    = "static"
 #  }
