@@ -305,9 +305,9 @@ func resourceNifcloudInstanceDelete(d *schema.ResourceData, meta interface{}) er
 	log.Printf("[DEBUG] Waiting for instance (%s) to become stopped", d.Id())
 
 	stopStateConf := &resource.StateChangeConf{
-		Pending:    []string{"pending", "running"},
+		Pending:    []string{"pending", "running", "warning"},
 		Target:     []string{"stopped"},
-		Refresh:    InstanceStateRefreshFunc(meta, d.Id(), []string{"warning"}),
+		Refresh:    InstanceStateRefreshFunc(meta, d.Id(), []string{}),
 		Timeout:    d.Timeout(schema.TimeoutDelete),
 		Delay:      10 * time.Second,
 		MinTimeout: 5 * time.Second,
@@ -331,9 +331,9 @@ func resourceNifcloudInstanceDelete(d *schema.ResourceData, meta interface{}) er
 	log.Printf("[DEBUG] Waiting for instance (%s) to become terminate", d.Id())
 
 	terminateStateConf := &resource.StateChangeConf{
-		Pending:    []string{"pending", "running", "stopped"},
+		Pending:    []string{"pending", "running", "stopped", "warning"},
 		Target:     []string{"terminated"},
-		Refresh:    InstanceStateRefreshFunc(meta, d.Id(), []string{"warning"}),
+		Refresh:    InstanceStateRefreshFunc(meta, d.Id(), []string{}),
 		Timeout:    d.Timeout(schema.TimeoutDelete),
 		Delay:      10 * time.Second,
 		MinTimeout: 5 * time.Second,

@@ -57,6 +57,8 @@ func Provider() terraform.ResourceProvider {
 			"nifcloud_route":                                    resourceNifcloudRoute(),
 			"nifcloud_route_table_association":                  resourceNifcloudRouteTableAssociation(),
 			"nifcloud_route_table_association_with_vpn_gateway": resourceNifcloudRouteTableAssociationWithVpnGateway(),
+			"nifcloud_lb":                                       resourceNifcloudLb(),
+			"nifcloud_lb_port":                                  resourceNifcloudLbPort(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

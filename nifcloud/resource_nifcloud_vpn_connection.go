@@ -3,8 +3,6 @@ package nifcloud
 import (
 	"fmt"
 	"log"
-	"regexp"
-	"strings"
 	"time"
 
 	"github.com/shztki/nifcloud-sdk-go/nifcloud"
@@ -417,24 +415,6 @@ func waitForEc2VpnConnectionAvailable(conn *computing.Computing, id string) erro
 	_, err := stateConf.WaitForState()
 
 	return err
-}
-
-func validateVpnConnectionTunnelPreSharedKey(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(string)
-
-	if (len(value) < 1) || (len(value) > 64) {
-		errors = append(errors, fmt.Errorf("%q must be between 1 and 64 characters in length", k))
-	}
-
-	if strings.HasPrefix(value, "0") {
-		errors = append(errors, fmt.Errorf("%q cannot start with zero character", k))
-	}
-
-	if !regexp.MustCompile(`^[0-9a-zA-Z-+&!@#$%^*(),.:_]+$`).MatchString(value) {
-		errors = append(errors, fmt.Errorf("%q can only contain alphanumeric and %q characters", k, "-+&!@#$%^*(),.:_"))
-	}
-
-	return
 }
 
 func ipsecToMapList(ipsec *computing.NiftyIpsecConfiguration) []map[string]interface{} {

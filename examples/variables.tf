@@ -353,3 +353,19 @@ variable "router_001" {
   }
 }
 
+# Create: https://pfs.nifcloud.com/api/rest/CreateLoadBalancer.htm
+#         https://pfs.nifcloud.com/api/rest/RegisterPortWithLoadBalancer.htm
+# Modify: https://pfs.nifcloud.com/api/rest/UpdateLoadBalancer.htm
+#         https://pfs.nifcloud.com/api/rest/UpdateLoadBalancerOption.htm
+#         https://pfs.nifcloud.com/api/rest/ConfigureHealthCheck.htm
+#         https://pfs.nifcloud.com/api/rest/RegisterInstancesWithLoadBalancer.htm
+#         https://pfs.nifcloud.com/api/rest/SetFilterForLoadBalancer.htm
+#         https://pfs.nifcloud.com/api/rest/SetLoadBalancerListenerSSLCertificate.htm
+#         https://pfs.nifcloud.com/api/rest/NiftySetLoadBalancerSSLPoliciesOfListener.htm
+variable "lb_001" {
+  default = {
+    name           = "examplelb1"
+    network_volume = 10
+    memo           = "example lb 001"
+  }
+}

@@ -44,7 +44,7 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 | 拠点間VPNゲートウェイ | ok | |
 | RDB | ok | イベント通知は作っていません |
 | ルーター | ok | dhcp関連とNAT関連とWebプロキシは作っていません|
-| ロードバランサー | n/a | |
+| ロードバランサー | ok | SSL関連は未検証 |
 | 付替IPアドレス | n/a | |
 | マルチロードバランサー | n/a | |
 | 追加NIC | n/a | |
@@ -74,6 +74,8 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 	* 「スナップショットからの作成、リードレプリカとしての作成」時に、初回作成時に指定はできなくても、変更が可能なパラメータについては、反映できるようにしてあります(パラメータグループの変更時には再起動も実行)。
 	* 原因がよくわかりませんでしたが、「スナップショットからの作成」時に `InternalFailure: System Error.` や `SerializationError: failed decoding Query response` で異常終了するものの、RDB自体は無事作成される、ということがあったため、これらのエラー時は無視して継続するようにしてあります。
 1. AssociateRouteTable系の処理は、Create直後だと `AssociationId` が返ってこなかった。どうやらタイムラグがあるようなので、意図的に Describe処理に Retry を入れて、待つ必要があった。
+1. ロードバランサーについて、コントロールパネルからだと `メモ` の入力が可能だが、API に `Description` 関連の処理が無く、入力できなかった。
+	* SSL は実装はしましたが、未検証となります(`SSLCertificateId` と `SSLPolicyId` の指定)。
 
 ##### examples/tffiles
 1. terraform 0.12 で動作確認中...

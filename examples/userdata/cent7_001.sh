@@ -1,5 +1,5 @@
 #!/bin/bash
-yum install -y httpd
+yum install -y httpd mod_ssl
 systemctl enable httpd
 systemctl start httpd
 
