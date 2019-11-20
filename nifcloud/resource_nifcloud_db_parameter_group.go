@@ -6,7 +6,6 @@ import (
 	"log"
 	"strings"
 	"time"
-	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/hashcode"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -299,32 +298,6 @@ func resourceNifcloudDbParameterHash(v interface{}) int {
 	buf.WriteString(fmt.Sprintf("%s-", strings.ToLower(m["value"].(string))))
 
 	return hashcode.String(buf.String())
-}
-
-func validateDbParamGroupName(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(string)
-
-	if (len(value) < 1) || (len(value) > 255) {
-		errors = append(errors, fmt.Errorf("%q must be between 1 and 255 characters in length", k))
-	}
-
-	if !regexp.MustCompile(`^[a-zA-Z]`).MatchString(value) {
-		errors = append(errors, fmt.Errorf("first character of %q must be a letter", k))
-	}
-
-	if regexp.MustCompile(`--`).MatchString(value) {
-		errors = append(errors, fmt.Errorf("%q cannot contain two consecutive hyphens", k))
-	}
-
-	if strings.HasSuffix(value, "-") {
-		errors = append(errors, fmt.Errorf("%q cannot end with a - character", k))
-	}
-
-	if !regexp.MustCompile(`^[0-9a-zA-Z-]+$`).MatchString(value) {
-		errors = append(errors, fmt.Errorf("%q can only contain alphanumeric and %q characters", k, "-"))
-	}
-
-	return
 }
 
 // Takes the result of flatmap.Expand for an array of parameters and

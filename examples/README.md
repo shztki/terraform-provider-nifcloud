@@ -21,7 +21,7 @@ terraform apply
 ### サンプルイメージ
 こんな構成ができあがります。
 
-![examples_001](https://raw.githubusercontent.com/shztki/terraform-provider-nifcloud/images/nifcloud_examples_001.png)
+![examples_001](https://raw.githubusercontent.com/shztki/terraform-provider-nifcloud/images/nifcloud_examples_002.png)
 
 * イメージとしては、このあと手動でリモートアクセスVPNGW を `192.168.2.245` で作成し、その際の配布NW が `10.168.201.0/24` になるイメージで `example_server_kanri` に userdata でルーティングを設定したり、 `example_firewallgroup_006` にアクセス許可ポリシーを入れたりしています。
 * `.disable` にしたりコメントアウトしたりしていますが、RDB やバックアップ、カスタマイズイメージの作成も可能です。
@@ -62,6 +62,10 @@ ssh-keygen -t rsa -C "" -f test-ssh-key.rsa -N ""
 	* AssociateRouteTable系にも `depends_on` は入れておくこと。
 	* VpnConnection にも `depends_on` は入れておくこと。
 	* ネットワーク系の処理が同時実行されないような注意が必要です。
+* ロードバランサーには未検証ですが、 `SSLCertificateId` と `SSLPolicyId` の指定ができるようにしてあります。 `SSLPolicyId` に指定できる値は以下のようなコマンドで確認可能とのこと。
+```
+nifcloud-debugcli computing nifty-describe-load-balancer-ssl-policies --load-balancer-name `LB名`
+```
 
 [1]:https://github.com/nifcloud/nifcloud-sdk-python
 [2]:https://pfs.nifcloud.com/api/rest/AuthorizeSecurityGroupIngress.htm
