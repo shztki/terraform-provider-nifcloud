@@ -8,6 +8,7 @@ resource "nifcloud_instance" "example_server_cent" {
   #public_ip           = "" # elastic
   network_interfaces {
     network_id = "net-COMMON_GLOBAL" # net-COMMON_GLOBAL | net-COMMON_PRIVATE
+    ipaddress  = "${element(nifcloud_eip.example_eip_cent.*.public_ip, count.index)}"
   }
   network_interfaces {
     network_name = "${lookup(var.privatelan_example2, "name")}"
@@ -33,6 +34,7 @@ resource "nifcloud_instance" "example_server_kanri" {
   #public_ip           = "" # elastic
   network_interfaces {
     network_id = "net-COMMON_GLOBAL" # net-COMMON_GLOBAL | net-COMMON_PRIVATE
+    ipaddress  = "${element(nifcloud_eip.example_eip_kanri.*.public_ip, count.index)}"
   }
   network_interfaces {
     network_name = "${lookup(var.privatelan_example1, "name")}"

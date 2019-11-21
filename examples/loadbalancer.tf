@@ -40,7 +40,7 @@ resource "nifcloud_lb" "example_lb_web" {
 }
 
 resource "nifcloud_lb_port" "example_lb_web_443" {
-  name            = "${nifcloud_lb.example_lb_web.id}"
+  name = "${nifcloud_lb.example_lb_web.id}"
 
   listener {
     protocol       = "HTTPS" # HTTP,HTTPS,FTP,空

@@ -60,7 +60,7 @@ func resourceNifcloudVolume() *schema.Resource {
 func resourceNifcloudVolumeCreate(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*NifcloudClient).computingconn
 
-	request := &computing.CreateVolumeInput{
+	request := computing.CreateVolumeInput{
 		Size:           nifcloud.Int64(int64(d.Get("size").(int))),
 		VolumeId:       nifcloud.String(d.Get("name").(string)),
 		DiskType:       nifcloud.String(d.Get("disk_type").(string)),
@@ -70,8 +70,8 @@ func resourceNifcloudVolumeCreate(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	log.Printf(
-		"[DEBUG] EBS Volume create opts: %s", request)
-	result, err := conn.CreateVolume(request)
+		"[DEBUG] EBS Volume create opts: %v", request)
+	result, err := conn.CreateVolume(&request)
 	if err != nil {
 		return fmt.Errorf("Error creating EC2 volume: %s", err)
 	}
@@ -216,11 +216,11 @@ func volumeStateRefreshFunc(conn *computing.Computing, volumeID string) resource
 func resourceNifcloudVolumeRead(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*NifcloudClient).computingconn
 
-	request := &computing.DescribeVolumesInput{
+	request := computing.DescribeVolumesInput{
 		VolumeId: []*string{nifcloud.String(d.Id())},
 	}
 
-	response, err := conn.DescribeVolumes(request)
+	response, err := conn.DescribeVolumes(&request)
 	if err != nil {
 		if ec2err, ok := err.(awserr.Error); ok && ec2err.Code() == "Client.InvalidParameterNotFound.Volume" {
 			d.SetId("")
@@ -259,12 +259,12 @@ func resourceNifcloudVolumeDelete(d *schema.ResourceData, meta interface{}) erro
 		}
 	}
 
-	input := &computing.DeleteVolumeInput{
+	input := computing.DeleteVolumeInput{
 		VolumeId: nifcloud.String(d.Id()),
 	}
 
 	err := resource.Retry(5*time.Minute, func() *resource.RetryError {
-		_, err := conn.DeleteVolume(input)
+		_, err := conn.DeleteVolume(&input)
 
 		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.Volume" {
 			return nil
@@ -278,21 +278,21 @@ func resourceNifcloudVolumeDelete(d *schema.ResourceData, meta interface{}) erro
 	})
 
 	if isResourceTimeoutError(err) {
-		_, err = conn.DeleteVolume(input)
+		_, err = conn.DeleteVolume(&input)
 	}
 
 	if err != nil {
 		return fmt.Errorf("error deleting EBS Volume (%s): %s", d.Id(), err)
 	}
 
-	describeInput := &computing.DescribeVolumesInput{
+	describeInput := computing.DescribeVolumesInput{
 		VolumeId: []*string{nifcloud.String(d.Id())},
 	}
 
 	var output *computing.DescribeVolumesOutput
 	err = resource.Retry(5*time.Minute, func() *resource.RetryError {
 		var err error
-		output, err = conn.DescribeVolumes(describeInput)
+		output, err = conn.DescribeVolumes(&describeInput)
 
 		if err != nil {
 			return resource.NonRetryableError(err)
@@ -314,7 +314,7 @@ func resourceNifcloudVolumeDelete(d *schema.ResourceData, meta interface{}) erro
 	})
 
 	if isResourceTimeoutError(err) {
-		output, err = conn.DescribeVolumes(describeInput)
+		output, err = conn.DescribeVolumes(&describeInput)
 	}
 
 	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "Client.InvalidParameterNotFound.Volume" {

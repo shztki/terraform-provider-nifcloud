@@ -66,6 +66,9 @@ ssh-keygen -t rsa -C "" -f test-ssh-key.rsa -N ""
 ```
 nifcloud-debugcli computing nifty-describe-load-balancer-ssl-policies --load-balancer-name `LB名`
 ```
+* 付替IPアドレスのアタッチは、サーバー側の `network_interfaces` の `ipaddress` でも指定できます(共通グローバルか共通プライベートの場合)。
+	* 付替IPアドレス側の `instance` でのサーバー指定も可能ですが、サーバーは必ず再起動されます。
+
 
 [1]:https://github.com/nifcloud/nifcloud-sdk-python
 [2]:https://pfs.nifcloud.com/api/rest/AuthorizeSecurityGroupIngress.htm

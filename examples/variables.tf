@@ -1,9 +1,11 @@
 variable "default_region" {
   default = "jp-east-3"
+  #default = "jp-east-1"
 }
 
 variable "default_zone" {
   default = "east-31"
+  #default = "east-12"
 }
 
 variable "charge_type" {
@@ -130,14 +132,30 @@ variable "volume_cent" {
   default = {
     name      = "centdisk"
     size      = 100
-    disk_type = "2"
+    disk_type = "2" # 2 (標準ディスク) | 3 (高速ディスクA) | 4 (高速ディスクB) | 5(フラッシュドライブ)
     memo      = "centdisk"
+  }
+}
+variable "volume_kanri" {
+  default = {
+    name      = "kanridisk"
+    size      = 100
+    disk_type = "2" # 2 (標準ディスク) | 3 (高速ディスクA) | 4 (高速ディスクB) | 5(フラッシュドライブ)
+    memo      = "kanridisk"
+  }
+}
+variable "volume_db" {
+  default = {
+    name      = "dbdisk"
+    size      = 100
+    disk_type = "2" # 2 (標準ディスク) | 3 (高速ディスクA) | 4 (高速ディスクB) | 5(フラッシュドライブ)
+    memo      = "dbdisk"
   }
 }
 variable "volume_win" {
   default = {
     name      = "windisk"
-    size      = 100
+    size      = 100 # 2 (標準ディスク) | 3 (高速ディスクA) | 4 (高速ディスクB) | 5(フラッシュドライブ)
     disk_type = "2"
     memo      = "windisk"
   }
@@ -145,16 +163,23 @@ variable "volume_win" {
 
 # Create: https://pfs.nifcloud.com/api/rest/CreateInstanceBackupRule.htm
 # Modify: https://pfs.nifcloud.com/api/rest/ModifyInstanceBackupRuleAttribute.htm
-variable "backup_cent_001" {
+variable "backup_cent" {
   default = {
-    name      = "examplebackup1"
-    max_count = 7   # 1-10
+    name      = "backupcent"
+    max_count = 1   # 1-10
     time_slot = "3" # JST: 1 (0:00-1:59) | 2 (2:00-3:59) | 3 (4:00-5:59) | 4 (6:00-7:59) | 5 (8:00-9:59) | 6 (10:00-11:59) | 7 (12:00-13:59) | 8 (14:00-15:59) | 9 (16:00-17:59) | 10 (18:00-19:59) | 11 (20:00-21:59) | 12 (22:00-23:59)
-    memo      = "backuptest001"
+    memo      = "backupcent"
   }
 }
-
-variable "backup_win_001" {
+variable "backup_db" {
+  default = {
+    name      = "backupdb"
+    max_count = 7   # 1-10
+    time_slot = "3" # JST: 1 (0:00-1:59) | 2 (2:00-3:59) | 3 (4:00-5:59) | 4 (6:00-7:59) | 5 (8:00-9:59) | 6 (10:00-11:59) | 7 (12:00-13:59) | 8 (14:00-15:59) | 9 (16:00-17:59) | 10 (18:00-19:59) | 11 (20:00-21:59) | 12 (22:00-23:59)
+    memo      = "backupcent"
+  }
+}
+variable "backup_win" {
   default = {
     name      = "examplebackup2"
     max_count = 1   # 1-10
@@ -367,5 +392,22 @@ variable "lb_001" {
     name           = "examplelb1"
     network_volume = 10
     memo           = "example lb 001"
+  }
+}
+
+# Create: https://pfs.nifcloud.com/api/rest/AllocateAddress.htm
+# Modify: https://pfs.nifcloud.com/api/rest/NiftyModifyAddressAttribute.htm
+#         https://pfs.nifcloud.com/api/rest/AssociateAddress.htm
+variable "eip_cent" {
+  default = {
+    nifty_private_ip = false # true:private | false:public
+    memo             = "example eip cent"
+  }
+}
+
+variable "eip_kanri" {
+  default = {
+    nifty_private_ip = false # true:private | false:public
+    memo             = "example eip kanri"
   }
 }
