@@ -45,7 +45,7 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 | RDB | ok | イベント通知は作っていません |
 | ルーター | ok | dhcp関連とNAT関連とWebプロキシは作っていません|
 | ロードバランサー | ok | SSL関連は未検証 |
-| 付替IPアドレス | n/a | |
+| 付替IPアドレス | ok | |
 | マルチロードバランサー | n/a | |
 | 追加NIC | n/a | |
 | 基本監視 | n/a | |
