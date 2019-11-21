@@ -1,6 +1,7 @@
 # Terraform Provider for NIFCLOUD
 * [nifcloud-sdk-go][1]を使用させていただき、ニフクラ用の terraform provider を作成してみる。
 * [こちら][2]を参考にさせていただく。
+* 2019/11/22 をもって開発は終了しております(v0.0.3)。
 
 ## 環境
 * [Terraform][5] 0.12+
@@ -78,9 +79,13 @@ $ mv terraform-provider-nifcloud ~/.terraform.d/plugins/
 	* SSL は実装はしましたが、未検証となります(`SSLCertificateId` と `SSLPolicyId` の指定)。
 
 ##### examples/tffiles
-1. terraform 0.12 で動作確認中...
+1. terraform v0.12.13 以下用サンプルコード
 
+##### examples_v0.12.14+/tffiles
+1. terraform v0.12.14 以上用サンプルコード
 
+##### その他
+1. Terraform v0.12 のアップデートがよくあるので、新しいバージョンでの実行がエラーになるようであれば、 `go.mod` にて `github.com/hashicorp/terraform-plugin-sdk` のバージョンを上げてビルドし直したものを利用すると解決することもあります。
 
 [1]:https://github.com/alice02/nifcloud-sdk-go
 [2]:https://github.com/kzmake/terraform-provider-nifcloud

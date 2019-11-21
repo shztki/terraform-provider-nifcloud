@@ -2,7 +2,7 @@
 nifcloud に各種リソースを作成するためのサンプルコード
 
 ## 環境
-* Terraform 0.12.13以下
+* Terraform 0.12.14+
 
 ### 環境変数
 ```
@@ -72,6 +72,7 @@ nifcloud-debugcli computing nifty-describe-load-balancer-ssl-policies --load-bal
 * 付替IPアドレスのアタッチは、サーバー側の `network_interfaces` の `ipaddress` でも指定できます(共通グローバルか共通プライベートの場合)。
 	* 付替IPアドレス側の `instance` でのサーバー指定も可能ですが、サーバーは必ず再起動されます。
 * バックアップルールやカスタマイズイメージの作成後は、比較的長い間サーバー側が処理中となる関係で、このリソース作成の実行のあとにサーバーリソースに関係する処理(ロードバランサーの作成で振り分け先になっているなど)があると、 `Server.ResourceIncorrectState.Instance.Processing` で終了することがあります。 `depends_on` でうまく順序をつけるか、インフラリソース作成後に別途バックアップルールやカスタマイズイメージ作成を実行するなどした方がよさそうです。
+
 
 [1]:https://github.com/nifcloud/nifcloud-sdk-python
 [2]:https://pfs.nifcloud.com/api/rest/AuthorizeSecurityGroupIngress.htm

@@ -5,7 +5,7 @@ resource "nifcloud_instancebackup_rule" "example_backup_rule_cent" {
   time_slot_id              = "${lookup(var.backup_cent, "time_slot")}"
   instance_unique_id        = ["${element(nifcloud_instance.example_server_cent.*.unique_id, count.index)}"]
   description               = "${format("%s%03d", "${lookup(var.backup_cent, "memo")}", count.index + 1)}"
-  depends_on                = ["nifcloud_volume.example_volume_cent"]
+  depends_on                = ["nifcloud_volume.example_volume_cent", "nifcloud_lb.example_lb_web", "nifcloud_lb_port.example_lb_web_443"]
 }
 
 resource "nifcloud_instancebackup_rule" "example_backup_rule_db" {
