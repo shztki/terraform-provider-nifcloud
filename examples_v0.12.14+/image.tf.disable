@@ -1,0 +1,10 @@
+resource "nifcloud_image" "example_image_001" {
+  region_name       = var.image_001["region"]
+  availability_zone = var.image_001["zone"]
+  name              = var.image_001["name"]
+  left_instance     = var.image_001["left"]
+  #instance_id       = var.image_001["instance"]
+  instance_id = nifcloud_instance.example_server_kanri[0].name
+  description = var.image_001["memo"]
+  depends_on  = [nifcloud_volume.example_volume_kanri[0]]
+}
